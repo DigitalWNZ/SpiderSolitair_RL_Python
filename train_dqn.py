@@ -1,3 +1,62 @@
+##########################################################################################
+# 网络结构：
+# 	- tableau_cnn: 与 A2C 相同的卷积结构
+# 	- 3层卷积处理 10×19 牌局
+# 	- 32→64→128 通道
+# - 全连接层 (fc)：
+# 	- 合并 CNN 特征、库存牌数、基础牌数
+# 	- 三层全连接：512→256→动作数
+# - 输出：每个动作的 Q 值
+
+# 2. ReplayBuffer 经验回放缓冲区 (第75-91行)
+# 	DQN 的核心组件之一：
+# 	- 存储过往经验 (state, action, reward, next_state, done)
+# 	- 支持随机采样，打破数据相关性
+# 	- 使用 deque 实现固定容量的循环缓冲区
+
+# 3. DQNAgent 主要类 (第93-310行)
+
+# 初始化参数：
+# 	- learning_rate: 学习率（1e-4）
+# 	- gamma: 折扣因子（0.99）
+# 	- epsilon_start/end: ε-贪婪策略参数（1.0→0.01）
+# 	- epsilon_decay: ε衰减率（0.995）
+# 	- buffer_size: 经验缓冲区大小（100000）
+# 	- batch_size: 批次大小（32）
+# 	- target_update_freq: 目标网络更新频率（1000步）
+
+# 双网络架构：
+# 	- q_network: 主网络，用于选择动作和训练
+# 	- target_network: 目标网络，用于计算目标 Q 值，定期同步
+# 	- 这两个网络初始是一样的结构
+
+# 核心方法：
+
+# select_action (第139-164行)：
+# 	ε-贪婪策略选择动作：
+# 		if random < ε:
+# 		  选择随机动作（考虑动作掩码）
+# 		else:
+# 		  调用q_network计算（s,a）的Q值，返回Q值最大的动作
+
+# train_step (第166-208行)：
+# 	1. 从replayBuffer区采样一批数据,放到state_dict和next_state_dict中
+# 	2. 使用q_network计算当前状态state的Q值：Q(s,a)
+# 	3. 使用target_network计算目标下一状态next_state的最大Q值：max Q'(s',a')
+# 	4. 目标Q值 target_q_value = r + γ * max Q'(s',a')
+# 	5. 计算 MSE 损失并更新网络
+# 	6. 使用梯度裁剪防止梯度爆炸
+
+# train (第209-279行)
+# 	单环境顺序训练：
+# 	1. 每个 episode：
+# 		- 使用 ε-贪婪策略选择动作
+# 		- 执行动作，存储经验到replayBuffer中
+# 		- 每步都进行训练更新
+# 		- 定期更新目标网络
+# 	2. 逐渐衰减 ε 值
+# 	3. 记录和保存模型
+##########################################################################################
 import gymnasium as gym
 import numpy as np
 import torch

@@ -1,3 +1,83 @@
+##########################################################################################
+# 网络结构（A2CNetwork）：
+#     - tableau_cnn: 卷积神经网络处理牌局状态
+#         - 输入：10×19 的牌局矩阵
+#         - 3层卷积：32→64→128 通道
+#         - 包含 ReLU 激活和最大池化
+#     - 共享层 (shared_fc)：
+#         - 结合 tableau_cnn 特征、库存牌数、基础牌数
+#         - 两层全连接：512→256 神经元
+#     - 输出头：
+#         - Actor头：输出动作概率分布的 logits, 也就是policy
+#         - Critic头：输出状态价值估计， 也就是估算V(s)
+
+# A2CAgent 主要类 (第107-488行)
+#     初始化参数：
+#         - n_envs: 并行环境数（默认4）
+#         - learning_rate: 学习率（7e-4）
+#         - gamma: 折扣因子（0.99）
+#         - gae_lambda: GAE参数（0.95）
+#         - value_coef: 价值损失权重（0.5）
+#         - entropy_coef: 熵损失权重（0.01）
+#         - n_steps: 收集步数（5）
+
+#     核心方法：
+#         compute_gae (第152-176行)：
+#         对传入的数组中每一条记录
+#             计算广义优势估计（GAE），平衡偏差和方差：
+#             advantage = reward + γ * next_value - current_value
+
+#     collect_rollouts (第178-260行)：
+#         输入为状态集states
+#         返回结果rollout_data的结构为:
+#             rollout_data = {
+#             'states': [[],[]...],
+#             'actions': [[],[]...],
+#             'rewards': [[],[]...],
+#             'dones': [[],[]...],
+#             'values': [[],[]...],
+#             'log_probs': [[],[]...],
+#             'next_value':[[],[]...],
+#             }
+#     从states状态集开始收集n步的经验数据,每一步：
+#         1. 使用当前网络A2CNetwork对states中的每个state（s）进行预测，获取动作概率logits和V(s)，结果存储到rollout_data当中。 
+#         2. 应用动作掩码（合法动作）
+#         3. 对所有state执行所有的采样action，记录next_state, reward等
+#         4. 存储next_states, reward到rollout_data中。 
+#         5. 用next_states替换states，进行下一步
+
+#     对n步以后的最终states中的状态集计算V(s),存储next_value到rollout_data中。 
+
+
+#     train_step (第262-361行)：
+#         针对collect_rollouts返回的记录，调用compute_gae计算每条记录的advantage和return
+#         标准化advantage
+#         （不明白这里为什么再次调用network预测policy (policy_logits)和V(s) (values)
+#         计算三个损失：
+#             - Actor损失：策略梯度损失
+#             - Critic损失：价值预测的MSE损失
+#             - Entropy损失：鼓励探索
+#         用这个三个损失构成loss
+#         反向传播和梯度裁剪
+
+#     train (第362-406行)
+#         创建多个并行环境
+#         根据定义好的每n步收集一次记录和并行环境的数量，决定需要进行几次的模型更新
+#         对于每次模型更新：
+#             - 调用rollout_data获取n步的实验数据
+#             - 调用train_step更新模型
+#             - 定期记录和保存模型
+#             - 跟踪指标：平均奖励、episode长度、胜率
+
+
+# 完整的训练流程：
+#     1. 创建带动作掩码的环境
+#     2. 初始化A2C智能体
+#     3. 训练100万步
+#     4. 保存模型和训练曲线
+#     5. 评估最终性能
+##########################################################################################
+
 import gymnasium as gym
 import numpy as np
 import torch
