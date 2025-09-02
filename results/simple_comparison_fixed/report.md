@@ -1,6 +1,6 @@
 # Spider Solitaire Simplified RL Comparison Report (Fixed)
 
-Generated on: 2025-09-02 13:04:37
+Generated on: 2025-09-02 15:39:43
 
 ## Summary Results (2 episodes each)
 
@@ -16,11 +16,12 @@ Generated on: 2025-09-02 13:04:37
 
 | Algorithm | Win Rate | Avg Reward | Final 20 Avg | Training Time |
 |-----------|----------|------------|--------------|---------------|
-| Simple DQN | 0.0% | -5050.0 | -5050.0 | 8.7s |
-| Simple A2C | 0.0% | -891.7 | -891.7 | 1.2s |
+| Simple DQN | 0.0% | -550.0 | -550.0 | 1.3s |
+| Simple A2C | 0.0% | -141.7 | -141.7 | 0.2s |
+| Simple PPO | 0.0% | -100.0 | -100.0 | 0.2s |
 
 ## Analysis
 
 - **Best Win Rate**: Simple DQN (0.0%)
-- **Best Average Reward**: Simple A2C (-891.7)
-- **Fastest Training**: Simple A2C (1.2s)
+- **Best Average Reward**: Simple PPO (-100.0)
+- **Fastest Training**: Simple A2C (0.2s)

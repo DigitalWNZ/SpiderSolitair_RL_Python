@@ -272,9 +272,10 @@ python quick_compare_simple.py --episodes 100
 ---
 
 ### `quick_compare_simple_fixed.py`
-**Function**: Fixed version comparing simplified algorithms.
+**Function**: Fixed version comparing simplified algorithms (DQN, A2C, and PPO).
 - Combines simplified networks with fixed environments
 - Most reliable for quick testing
+- Includes all three algorithms with lightweight architectures
 
 **How to run**:
 ```bash
@@ -285,8 +286,12 @@ python quick_compare_simple_fixed.py --episodes 10 --max-steps 100
 - `results/simple_comparison_fixed/`: Results directory
 
 **Calls**:
-- Fixed environment modules
-- Simple training modules
+- `spider_solitaire_env_fixed.py`
+- `spider_solitaire_masked_env_fixed.py`
+- `train_dqn_simple.py` (imports SimpleDQNAgent)
+- `train_a2c_simple.py` (imports SimpleA2CAgent)
+- `train_ppo_simple.py` (imports SimpleSpiderSolitaireFeaturesExtractor)
+- Uses PPO from stable_baselines3
 
 ---
 
