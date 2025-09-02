@@ -1,0 +1,36 @@
+[
+  {
+    "algorithm": "Simple DQN",
+    "episodes": 2,
+    "training_time": 8.722191333770752,
+    "episode_rewards": [
+      -5050,
+      -5050
+    ],
+    "episode_lengths": [
+      500,
+      500
+    ],
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_reward": -5050.0,
+    "final_20_avg": -5050.0
+  },
+  {
+    "algorithm": "Simple A2C",
+    "episodes": 6,
+    "training_time": 1.162024974822998,
+    "episode_rewards": [
+      -5050,
+      -60
+    ],
+    "episode_lengths": [
+      500,
+      1
+    ],
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_reward": -891.6666666666666,
+    "final_20_avg": -891.6666666666666
+  }
+]
