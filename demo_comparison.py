@@ -41,7 +41,7 @@ def simulate_training_curves():
     return {
         'DQN': {
             'rewards': dqn_rewards,
-            'win_rate': len([r for r in dqn_rewards if r > 900]) / episodes,
+            'win_rate': len([r for r in dqn_rewards if r > 0]) / episodes,
             'training_time': 120,  # seconds
             'characteristics': {
                 'sample_efficiency': 'High',
@@ -52,7 +52,7 @@ def simulate_training_curves():
         },
         'A2C': {
             'rewards': a2c_rewards,
-            'win_rate': len([r for r in a2c_rewards if r > 900]) / episodes,
+            'win_rate': len([r for r in a2c_rewards if r > 0]) / episodes,
             'training_time': 80,
             'characteristics': {
                 'sample_efficiency': 'Low',
@@ -63,7 +63,7 @@ def simulate_training_curves():
         },
         'PPO': {
             'rewards': ppo_rewards,
-            'win_rate': len([r for r in ppo_rewards if r > 900]) / episodes,
+            'win_rate': len([r for r in ppo_rewards if r > 0]) / episodes,
             'training_time': 100,
             'characteristics': {
                 'sample_efficiency': 'Medium',

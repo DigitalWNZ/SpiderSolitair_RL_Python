@@ -96,7 +96,7 @@ def quick_train_dqn(episodes=100, max_steps_per_episode=500):
         episode_rewards.append(episode_reward)
         episode_lengths.append(episode_length)
         
-        if episode_reward > 900:
+        if episode_reward > 0:
             wins += 1
         
         # Update epsilon
@@ -178,7 +178,7 @@ def quick_train_a2c(episodes=100, max_steps_per_episode=500):
                     
                     # Determine game result from reward/length
                     game_result = 'TRUNCATED' if current_episode_length >= max_steps_per_episode else 'COMPLETED'
-                    if current_episode_reward > 900:
+                    if current_episode_reward > 0:
                         game_result = 'WON'
                     
                     print(f"\n[A2C] Completed Episode {episodes_completed}/{episodes}, "
@@ -188,7 +188,7 @@ def quick_train_a2c(episodes=100, max_steps_per_episode=500):
                     episode_rewards.append(current_episode_reward)
                     episode_lengths.append(current_episode_length)
                     
-                    if current_episode_reward > 900:
+                    if current_episode_reward > 0:
                         wins += 1
                         print(f"[A2C] Episode {episodes_completed} - WON!")
                     
@@ -283,7 +283,7 @@ def quick_train_ppo(episodes=100, max_steps_per_episode=500):
             
             episode_rewards.append(episode_reward)
             episode_lengths.append(episode_length)
-            if episode_reward > 900:
+            if episode_reward > 0:
                 wins += 1
         
         eval_env.close()

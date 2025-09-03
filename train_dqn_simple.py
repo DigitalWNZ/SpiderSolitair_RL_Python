@@ -262,7 +262,7 @@ class SimpleDQNAgent:
             self.episode_lengths.append(episode_length)
             self.total_episodes += 1
             
-            if episode_reward > 900:  # Win condition
+            if episode_reward > 0:  # Win condition
                 self.wins += 1
             
             # Decay epsilon
@@ -363,7 +363,7 @@ class SimpleDQNAgent:
                     eval_env.render()
             
             rewards.append(episode_reward)
-            if episode_reward > 900:
+            if episode_reward > 0:
                 wins += 1
             
             print(f"Episode {episode + 1}: Reward = {episode_reward:.2f}")

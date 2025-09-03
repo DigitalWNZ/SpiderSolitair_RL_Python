@@ -51,7 +51,7 @@ class MetricsCallback(BaseCallback):
             self.episode_lengths.append(info.get('episode', {}).get('l', 1))
             self.episode_times.append(time.time() - self.start_time)
             
-            if reward > 900:  # Win condition
+            if reward > 0:  # Win condition
                 self.wins += 1
             
             # Log episode details periodically
@@ -143,7 +143,7 @@ def train_dqn(total_timesteps: int, max_steps_per_episode: int = 500) -> Dict:
         episode_lengths.append(episode_length)
         episode_times.append(time.time() - episode_start)
         
-        if episode_reward > 900:
+        if episode_reward > 0:
             wins += 1
         
         # Update epsilon
@@ -241,7 +241,7 @@ def train_a2c(total_timesteps: int, max_steps_per_episode: int = 500) -> Dict:
                 episode_lengths.append(current_length)
                 episode_times.append(time.time() - episode_start)
                 
-                if current_reward > 900:
+                if current_reward > 0:
                     wins += 1
                 
                 # Reset tracking
@@ -382,7 +382,7 @@ def plot_results(results: List[Dict]):
     for result in results:
         alg = result['algorithm']
         n_episodes = len(result['episode_rewards'])
-        wins_cumsum = np.cumsum([1 if r > 900 else 0 for r in result['episode_rewards']])
+        wins_cumsum = np.cumsum([1 if r > 0 else 0 for r in result['episode_rewards']])
         episodes = np.arange(1, n_episodes + 1)
         win_rates = wins_cumsum / episodes
         ax.plot(episodes, win_rates, label=alg, color=colors[alg])

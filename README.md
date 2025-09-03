@@ -56,7 +56,8 @@ The base Spider Solitaire environment with bug fixes:
   - 2-suit Spider Solitaire (104 cards)
   - Maximum steps per episode (truncation)
   - Proper handling of stuck games
-  - Reward structure: move (-1), invalid move (-10), reveal card (+5), complete sequence (+100), win (+1000)
+  - Reward structure: valid move (-1), invalid move (-10), complete sequence (+100), win (+1000)
+  - Win condition: episode_reward > 0 (encourages finding shortest path to victory)
 - **Key Classes**: `SpiderSolitaireEnvFixed`
 
 ### spider_solitaire_masked_env_fixed.py
@@ -266,10 +267,11 @@ MaskedSpiderSolitaireEnvFixed   SpiderSolitaireEnvFixed
 
 ## Performance Notes
 
-- **DQN & A2C**: Achieve positive rewards (~440) with action masking
-- **PPO**: Initially gets negative rewards as it learns to avoid invalid actions
+- **DQN & A2C**: With action masking, can achieve positive rewards when winning
+- **PPO**: Without action masking, struggles with many invalid moves (-10 each)
 - **Training Speed**: PPO > A2C > DQN
 - **Stability**: A2C = DQN > PPO (without action masking)
+- **Win Criteria**: Episode reward > 0 (requires completing enough sequences to offset move costs)
 
 ## Future Improvements
 

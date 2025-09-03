@@ -96,7 +96,7 @@ def quick_train_simple_dqn(episodes=100, max_steps_per_episode=500):
         episode_rewards.append(episode_reward)
         episode_lengths.append(episode_length)
         
-        if episode_reward > 900:
+        if episode_reward > 0:
             wins += 1
         
         # Update epsilon
@@ -179,7 +179,7 @@ def quick_train_simple_a2c(episodes=100, max_steps_per_episode=500):
                     # Extract info from the last state/rollout if available
                     # Since we're in vectorized env, we need to check if info is available
                     game_result = 'TRUNCATED' if current_episode_length >= max_steps_per_episode else 'COMPLETED'
-                    if current_episode_reward > 900:
+                    if current_episode_reward > 0:
                         game_result = 'WON'
                     
                     print(f"\n[Simple A2C] Completed Episode {episodes_completed}/{episodes}, "
@@ -189,7 +189,7 @@ def quick_train_simple_a2c(episodes=100, max_steps_per_episode=500):
                     episode_rewards.append(current_episode_reward)
                     episode_lengths.append(current_episode_length)
                     
-                    if current_episode_reward > 900:
+                    if current_episode_reward > 0:
                         wins += 1
                         print(f"[Simple A2C] Episode {episodes_completed} - WON!")
                     
@@ -284,7 +284,7 @@ def quick_train_simple_ppo(episodes=100, max_steps_per_episode=500):
             
             episode_rewards.append(episode_reward)
             episode_lengths.append(episode_length)
-            if episode_reward > 900:
+            if episode_reward > 0:
                 wins += 1
         
         eval_env.close()

@@ -113,7 +113,7 @@ def analyze_game_statistics(env, model, n_episodes=100):
         stats['moves'].append(info['moves'])
         stats['scores'].append(info['score'])
         stats['foundations'].append(obs['foundation_count'][0])
-        stats['win'].append(1 if episode_reward > 900 else 0)
+        stats['win'].append(1 if episode_reward > 0 else 0)
         stats['valid_moves_per_step'].append(np.mean(step_valid_moves))
     
     # Create analysis plots

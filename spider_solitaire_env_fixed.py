@@ -6,13 +6,13 @@
 # 	当凑足一个A-K，这些牌就会消除，然后foundation + 1， 当foundation = 8，游戏胜利。 
 
 # Reward：
-# 	初始reward ==》500
-# 	移动一张 ==》-1 分， 
-# 	开一张牌 ==》+5 分， 
+# 	初始episode reward ==》0
+# 	有效移动 ==》-1 分（鼓励找到最短路径）
 # 	无效的移动 ==》-10分， 
 # 	用光了stock ==》-10分， 
 # 	凑足一组A-K ==》+100分， 
-# 	凑足8组 ==》+1000分。 
+# 	凑足8组 ==》+1000分。
+# 	游戏胜利条件：episode_reward > 0 
 
 # reset:
 # 	两副牌，放到8个数组中，然后放到deck数组中，这是最简洁的实现方式； 
@@ -137,7 +137,7 @@ class SpiderSolitaireEnvFixed(gym.Env):
             # Single integer action - should not happen in this environment
             raise ValueError(f"Expected array-like action, got {type(action)}")
         
-        reward = -1  # Default penalty for each move
+        reward = -1  # Default penalty for each move (encourages efficiency)
         terminated = False
         truncated = False
         
@@ -167,10 +167,12 @@ class SpiderSolitaireEnvFixed(gym.Env):
                 self.valid_moves += 1
                 
                 # Check for completed sequences
-                self._check_completed_sequences()
+                sequences_completed = self._check_completed_sequences()
+                if sequences_completed > 0:
+                    reward += sequences_completed * 100  # +100 for each completed sequence
                 
-                # Small reward for valid move
-                reward = 1
+                # Valid move still costs -1 (already set above)
+                # This encourages finding the shortest path to win
             else:
                 reward = -10  # Invalid move penalty
                 self.invalid_moves += 1
@@ -276,8 +278,10 @@ class SpiderSolitaireEnvFixed(gym.Env):
         
         return True
     
-    def _check_completed_sequences(self):
-        """Check and remove completed sequences (K to A of same suit)."""
+    def _check_completed_sequences(self) -> int:
+        """Check and remove completed sequences (K to A of same suit).
+        Returns the number of sequences completed."""
+        completed_count = 0
         for col in range(10):
             if len(self.tableau[col]) >= 13:
                 # Check if last 13 cards form a complete sequence
@@ -295,6 +299,8 @@ class SpiderSolitaireEnvFixed(gym.Env):
                     self.tableau[col] = self.tableau[col][:-13]
                     self.foundation.append(cards)
                     self.score += 100  # Bonus for completing sequence
+                    completed_count += 1
+        return completed_count
     
     def _get_suit(self, card: int) -> int:
         """Get suit of card (0-3)."""

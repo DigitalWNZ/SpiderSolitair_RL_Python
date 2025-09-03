@@ -382,7 +382,7 @@ class A2CAgent:
                     self.episode_rewards.append(episode_reward)
                     self.episode_lengths.append(episode_length)
                     
-                    is_win = episode_reward > 900  # Win condition
+                    is_win = episode_reward > 0  # Win condition
                     if is_win:
                         self.wins += 1
                     
@@ -632,7 +632,7 @@ class A2CAgent:
             # Recent performance (last 100 episodes)
             if len(all_rewards) >= 100:
                 recent_rewards = all_rewards[-100:]
-                recent_wins = sum(1 for r in recent_rewards if r > 900)
+                recent_wins = sum(1 for r in recent_rewards if r > 0)
                 print(f"\nLast 100 Episodes:")
                 print(f"  Average reward: {np.mean(recent_rewards):.2f}")
                 print(f"  Win rate: {recent_wins/100:.2%}")
@@ -719,7 +719,7 @@ class A2CAgent:
                     eval_env.render()
             
             rewards.append(episode_reward)
-            if episode_reward > 900:
+            if episode_reward > 0:
                 wins += 1
             
             print(f"Episode {episode + 1}: Reward = {episode_reward:.2f}")

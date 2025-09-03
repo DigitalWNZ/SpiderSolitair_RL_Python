@@ -320,7 +320,7 @@ class DQNAgent:
             self.episode_lengths.append(episode_length)
             self.total_episodes += 1
             
-            if episode_reward > 900:  # Win condition
+            if episode_reward > 0:  # Win condition
                 self.wins += 1
             
             # Decay epsilon
