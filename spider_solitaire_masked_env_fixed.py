@@ -1,3 +1,7 @@
+##########################################################################################
+# 基于SpiderSolitaireEnv这个类： 
+# 	找出所有的潜在action，并用_is_valid_move校验 有效标记为1，否则为0
+##########################################################################################
 import numpy as np
 import gymnasium as gym
 from gymnasium import spaces
@@ -103,9 +107,10 @@ class MaskedSpiderSolitaireEnvFixed(SpiderSolitaireEnvFixed):
 
 
 # Wrapper for stable-baselines3 that handles action masking
-class ActionMasker(gym.ActionWrapper):
+class ActionMasker(gym.Wrapper):
     """
-    Wrapper that applies action masks for discrete action spaces.
+    Wrapper that converts the multi-discrete action space to discrete.
+    Note: Using gym.Wrapper instead of gym.ActionWrapper to avoid automatic action conversion.
     """
     
     def __init__(self, env):
@@ -113,13 +118,10 @@ class ActionMasker(gym.ActionWrapper):
         self._action_space_shape = env.action_space.nvec.prod()
         self.action_space = spaces.Discrete(self._action_space_shape)
         
-    def action(self, action: int) -> np.ndarray:
-        """Convert discrete action to multi-discrete."""
-        return self.env._index_to_action(action)
-    
-    def reverse_action(self, action: np.ndarray) -> int:
-        """Convert multi-discrete action to discrete."""
-        return self.env._action_to_index(action)
+    def step(self, action: int):
+        """Pass the action directly to the wrapped environment."""
+        # MaskedSpiderSolitaireEnvFixed already expects integer actions
+        return self.env.step(action)
 
 
 # Create the ActionMasker wrapper function

@@ -11,7 +11,7 @@ from stable_baselines3.common.torch_layers import BaseFeaturesExtractor
 import os
 from datetime import datetime
 
-from spider_solitaire_env import SpiderSolitaireEnv
+from spider_solitaire_env_fixed import SpiderSolitaireEnvFixed
 
 
 class SpiderSolitaireFeaturesExtractor(BaseFeaturesExtractor):
@@ -111,16 +111,25 @@ def make_env(rank, seed=0):
     Utility function for multiprocessed env.
     """
     def _init():
-        env = SpiderSolitaireEnv()
+        env = SpiderSolitaireEnvFixed()
         env = Monitor(env)
         env.reset(seed=seed + rank)
         return env
     return _init
 
 
-def train_spider_solitaire():
+def train_spider_solitaire(total_timesteps=2_000_000, n_envs=4, learning_rate=3e-4):
     """
     Train a PPO agent on Spider Solitaire.
+    
+    Args:
+        total_timesteps: Total timesteps to train for
+        n_envs: Number of parallel environments
+        learning_rate: Learning rate for PPO
+        
+    Returns:
+        model: Trained PPO model
+        env: Training environment
     """
     # Create directories
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -130,11 +139,10 @@ def train_spider_solitaire():
     os.makedirs(model_dir, exist_ok=True)
     
     # Environment setup
-    n_envs = 4  # Number of parallel environments
-    env = make_vec_env(SpiderSolitaireEnv, n_envs=n_envs, vec_env_cls=SubprocVecEnv)
+    env = make_vec_env(SpiderSolitaireEnvFixed, n_envs=n_envs, vec_env_cls=SubprocVecEnv)
     
     # Evaluation environment
-    eval_env = SpiderSolitaireEnv()
+    eval_env = SpiderSolitaireEnvFixed()
     eval_env = Monitor(eval_env)
     
     # PPO hyperparameters optimized for Spider Solitaire
@@ -147,7 +155,7 @@ def train_spider_solitaire():
     model = PPO(
         "MultiInputPolicy",
         env,
-        learning_rate=3e-4,
+        learning_rate=learning_rate,
         n_steps=2048,
         batch_size=64,
         n_epochs=10,
@@ -186,12 +194,11 @@ def train_spider_solitaire():
     
     # Train the model
     print("Starting training...")
-    total_timesteps = 2_000_000
     
     model.learn(
         total_timesteps=total_timesteps,
         callback=callbacks,
-        progress_bar=True,
+        progress_bar=False,  # Disable progress bar to avoid dependency issues
     )
     
     # Save final model
@@ -209,7 +216,7 @@ def evaluate_model(model_path, n_episodes=10, render=True):
     model = PPO.load(model_path)
     
     # Create environment
-    env = SpiderSolitaireEnv(render_mode="human" if render else None)
+    env = SpiderSolitaireEnvFixed(render_mode="human" if render else None)
     
     wins = 0
     total_rewards = []

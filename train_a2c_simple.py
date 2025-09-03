@@ -11,8 +11,8 @@ from typing import Dict, List, Tuple, Optional
 import matplotlib.pyplot as plt
 from collections import deque
 
-from spider_solitaire_env import SpiderSolitaireEnv
-from spider_solitaire_masked_env import MaskedSpiderSolitaireEnv, ActionMasker
+from spider_solitaire_env_fixed import SpiderSolitaireEnvFixed
+from spider_solitaire_masked_env_fixed import MaskedSpiderSolitaireEnvFixed, ActionMasker
 
 
 class SimpleA2CNetwork(nn.Module):
@@ -237,6 +237,13 @@ class SimpleA2CAgent:
                     self.episode_lengths.append(info.get('episode_length', 1))
                     if reward > 900:  # Win condition
                         self.wins += 1
+                    
+                    # Reset the environment after done
+                    if hasattr(self.env, 'envs'):  # Vectorized environment
+                        next_state, _ = self.env.envs[i].reset()
+                    else:  # Single environment
+                        next_state, _ = self.env.reset()
+                    next_states[i] = next_state
             
             rollout_data['rewards'].append(rewards)
             rollout_data['dones'].append(dones)
@@ -365,7 +372,7 @@ class SimpleA2CAgent:
         # Initialize environments
         if self.n_envs > 1:
             # Create multiple environments
-            envs = [ActionMasker(MaskedSpiderSolitaireEnv()) for _ in range(self.n_envs)]
+            envs = [ActionMasker(MaskedSpiderSolitaireEnvFixed()) for _ in range(self.n_envs)]
             states = [env.reset()[0] for env in envs]
             self.env.envs = envs  # Store for rollout collection
         else:
@@ -434,7 +441,7 @@ class SimpleA2CAgent:
         """
         Evaluate the trained model.
         """
-        eval_env = SpiderSolitaireEnv(render_mode="human" if render else None)
+        eval_env = SpiderSolitaireEnvFixed(render_mode="human" if render else None)
         
         rewards = []
         wins = 0
@@ -518,7 +525,7 @@ def plot_training_results(rewards: List[float], lengths: List[float], save_path:
 
 def main():
     # Create environment
-    env = ActionMasker(MaskedSpiderSolitaireEnv())
+    env = ActionMasker(MaskedSpiderSolitaireEnvFixed())
     
     # Create agent with simplified network
     agent = SimpleA2CAgent(

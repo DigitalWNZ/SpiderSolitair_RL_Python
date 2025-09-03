@@ -11,8 +11,8 @@ from datetime import datetime
 from typing import Dict, List, Tuple
 import matplotlib.pyplot as plt
 
-from spider_solitaire_env import SpiderSolitaireEnv
-from spider_solitaire_masked_env import MaskedSpiderSolitaireEnv, ActionMasker
+from spider_solitaire_env_fixed import SpiderSolitaireEnvFixed
+from spider_solitaire_masked_env_fixed import MaskedSpiderSolitaireEnvFixed, ActionMasker
 
 
 class SimpleDQNNetwork(nn.Module):
@@ -144,6 +144,10 @@ class SimpleDQNAgent:
                 valid_actions = np.where(mask > 0)[0]
                 if len(valid_actions) > 0:
                     return np.random.choice(valid_actions)
+                else:
+                    # No valid actions - shouldn't happen in properly designed env
+                    # but return 0 as fallback
+                    return 0
             return self.env.action_space.sample()
         else:
             # Greedy action
@@ -317,7 +321,7 @@ class SimpleDQNAgent:
         """
         Evaluate the trained model.
         """
-        eval_env = SpiderSolitaireEnv(render_mode="human" if render else None)
+        eval_env = SpiderSolitaireEnvFixed(render_mode="human" if render else None)
         
         rewards = []
         wins = 0
@@ -400,9 +404,9 @@ def main():
     # Create environment
     use_masked = True
     if use_masked:
-        env = ActionMasker(MaskedSpiderSolitaireEnv())
+        env = ActionMasker(MaskedSpiderSolitaireEnvFixed())
     else:
-        env = SpiderSolitaireEnv()
+        env = SpiderSolitaireEnvFixed()
     
     # Create agent with simplified network
     agent = SimpleDQNAgent(

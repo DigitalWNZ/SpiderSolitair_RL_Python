@@ -172,14 +172,13 @@ def train_a2c(total_timesteps: int, max_steps_per_episode: int = 500) -> Dict:
     
     start_time = time.time()
     
-    # Create multiple environments for A2C
-    n_envs = 4
-    envs = [ActionMasker(MaskedSpiderSolitaireEnvFixed(max_steps=max_steps_per_episode)) 
-            for _ in range(n_envs)]
+    # For single environment to avoid dimension issues
+    n_envs = 1
+    env = ActionMasker(MaskedSpiderSolitaireEnvFixed(max_steps=max_steps_per_episode))
     
-    # Use first env for agent initialization
+    # Create agent with single environment
     agent = A2CAgent(
-        envs[0],
+        env,
         n_envs=n_envs,
         learning_rate=7e-4,
         gamma=0.99,
@@ -190,11 +189,8 @@ def train_a2c(total_timesteps: int, max_steps_per_episode: int = 500) -> Dict:
         n_steps=5,
     )
     
-    # Store envs for rollout collection
-    agent.env.envs = envs
-    
     # Initialize states
-    states = [env.reset()[0] for env in envs]
+    states = [env.reset()[0]]
     
     # Training metrics
     episode_rewards = []
@@ -204,10 +200,10 @@ def train_a2c(total_timesteps: int, max_steps_per_episode: int = 500) -> Dict:
     episodes = 0
     total_steps = 0
     
-    # Episode tracking for each environment
-    current_rewards = [0] * n_envs
-    current_lengths = [0] * n_envs
-    episode_starts = [time.time()] * n_envs
+    # Episode tracking
+    current_reward = 0
+    current_length = 0
+    episode_start = time.time()
     
     while total_steps < total_timesteps:
         # Collect rollouts
@@ -215,25 +211,25 @@ def train_a2c(total_timesteps: int, max_steps_per_episode: int = 500) -> Dict:
         
         # Process rollout data
         for step in range(len(rollout_data['rewards'])):
-            for env_idx, (reward, done) in enumerate(zip(rollout_data['rewards'][step], 
-                                                         rollout_data['dones'][step])):
-                current_rewards[env_idx] += reward
-                current_lengths[env_idx] += 1
-                total_steps += 1
+            reward = rollout_data['rewards'][step][0]  # Single environment
+            done = rollout_data['dones'][step][0]
+            current_reward += reward
+            current_length += 1
+            total_steps += 1
+            
+            if done:
+                episodes += 1
+                episode_rewards.append(current_reward)
+                episode_lengths.append(current_length)
+                episode_times.append(time.time() - episode_start)
                 
-                if done:
-                    episodes += 1
-                    episode_rewards.append(current_rewards[env_idx])
-                    episode_lengths.append(current_lengths[env_idx])
-                    episode_times.append(time.time() - episode_starts[env_idx])
-                    
-                    if current_rewards[env_idx] > 900:
-                        wins += 1
-                    
-                    # Reset tracking
-                    current_rewards[env_idx] = 0
-                    current_lengths[env_idx] = 0
-                    episode_starts[env_idx] = time.time()
+                if current_reward > 900:
+                    wins += 1
+                
+                # Reset tracking
+                current_reward = 0
+                current_length = 0
+                episode_start = time.time()
         
         # Train on rollouts
         agent.train_step(rollout_data)
@@ -251,9 +247,8 @@ def train_a2c(total_timesteps: int, max_steps_per_episode: int = 500) -> Dict:
     os.makedirs("models", exist_ok=True)
     agent.save_model("models/a2c_spider_solitaire_fixed.pt")
     
-    # Close environments
-    for env in envs:
-        env.close()
+    # Close environment
+    env.close()
     
     return {
         'algorithm': 'A2C',
@@ -283,11 +278,12 @@ def train_ppo(total_timesteps: int, max_steps_per_episode: int = 500) -> Dict:
     start_time = time.time()
     
     # Create vectorized environment
+    # Note: PPO doesn't use explicit action masking but learns to avoid invalid actions through rewards
     n_envs = 4
     env = make_vec_env(
         lambda: Monitor(SpiderSolitaireEnvFixed(max_steps=max_steps_per_episode)),
         n_envs=n_envs,
-        vec_env_cls=SubprocVecEnv
+        vec_env_cls=DummyVecEnv  # Use DummyVecEnv for stability
     )
     
     # Create PPO model
@@ -304,14 +300,14 @@ def train_ppo(total_timesteps: int, max_steps_per_episode: int = 500) -> Dict:
         ent_coef=0.01,
         vf_coef=0.5,
         max_grad_norm=0.5,
-        verbose=1,
+        verbose=0,  # Reduce verbosity
     )
     
     # Metrics callback
     callback = MetricsCallback()
     
-    # Train
-    model.learn(total_timesteps=total_timesteps, callback=callback)
+    # Train with progress bar disabled
+    model.learn(total_timesteps=total_timesteps, callback=callback, progress_bar=False)
     
     training_time = time.time() - start_time
     
@@ -456,7 +452,7 @@ def generate_report(results: List[Dict]):
     report.append("\n## Training Configuration")
     if results:
         report.append(f"- Total timesteps per algorithm: {results[0]['total_timesteps']:,}")
-        report.append(f"- Number of parallel environments: 4 (A2C, PPO), 1 (DQN)")
+        report.append(f"- Number of parallel environments: 1 (DQN, A2C), 4 (PPO)")
     
     report.append("\n## Summary Results\n")
     report.append("| Algorithm | Episodes | Win Rate | Avg Reward (Last 100) | Training Time | Steps/Second |")

@@ -1,16 +1,16 @@
 import gymnasium as gym
 import numpy as np
-from spider_solitaire_env import SpiderSolitaireEnv
+from spider_solitaire_env_fixed import SpiderSolitaireEnvFixed
 
 # Register the environment
 gym.register(
     id='SpiderSolitaire-v0',
-    entry_point='spider_solitaire_env:SpiderSolitaireEnv',
+    entry_point='spider_solitaire_env_fixed:SpiderSolitaireEnvFixed',
 )
 
 def play_random_game():
     """Play a game with random actions."""
-    env = SpiderSolitaireEnv(render_mode="human")
+    env = SpiderSolitaireEnvFixed(render_mode="human")
     obs, info = env.reset(seed=42)
     
     print("Starting Spider Solitaire game...")
@@ -47,7 +47,7 @@ def play_random_game():
 
 def play_interactive_game():
     """Play an interactive game."""
-    env = SpiderSolitaireEnv(render_mode="human")
+    env = SpiderSolitaireEnvFixed(render_mode="human")
     obs, info = env.reset()
     
     print("Welcome to Spider Solitaire!")
@@ -94,7 +94,7 @@ def test_environment():
     print("Testing Spider Solitaire Environment...")
     
     # Test initialization
-    env = SpiderSolitaireEnv()
+    env = SpiderSolitaireEnvFixed()
     print("✓ Environment created")
     
     # Test reset

@@ -1,3 +1,60 @@
+##########################################################################################
+# 游戏规则： 
+# 	两副牌
+# 	显示的牌面部分是10组牌，分别有[6, 6, 6, 6, 5, 5, 5, 5, 5, 5]张牌
+# 	还有5组牌（stock）是隐藏的， 每组10张；每次可以选取一组，这组牌的每张牌会附加到显示的10组牌的末尾。 
+# 	当凑足一个A-K，这些牌就会消除，然后foundation + 1， 当foundation = 8，游戏胜利。 
+
+# Reward：
+# 	初始reward ==》500
+# 	移动一张 ==》-1 分， 
+# 	开一张牌 ==》+5 分， 
+# 	无效的移动 ==》-10分， 
+# 	用光了stock ==》-10分， 
+# 	凑足一组A-K ==》+100分， 
+# 	凑足8组 ==》+1000分。 
+
+# reset:
+# 	两副牌，放到8个数组中，然后放到deck数组中，这是最简洁的实现方式； 
+# 	将deck数组打散，用deck.pop方法填满用于显示的牌面[6, 6, 6, 6, 5, 5, 5, 5, 5, 5]。 
+# 	剩下的分成5个stock，foundation置为0
+
+# _is_valid_sequence:
+# 	花色一致且连续
+
+# _is_valid_move:
+# 	每个move的表现形式（from_col， to_col，num_cards）
+# 	待移动序列满足_is_valid_sequence
+# 	from_col的顶牌 = to_col的底牌
+
+# _move_cards
+# 	将待移动序列移动到to_col
+# 	看from_col的底牌是否可开，如果开 +5分
+
+
+# _deal_from_stock
+# 	开一个stock
+# 	stock中的每张牌会附加到显示的10组牌的末尾
+
+# _is_complete_sequence
+# 	判断是否是同花色A-K
+
+# _check_completed_sequences
+# 	找出所有A-K序列然后移除， 分数+100
+
+# _count_valid_moves
+# 	找出所有潜在的有效的move
+
+# step
+# 	如果是移动牌
+# 		调用_is_valid_move校验合法性
+# 		如果合法==》 调用_move_cards移动，步数 + 1， reward -1； 如果结束 reward + 1000
+# 		如果非法==〉reward - 10
+# 	如果是开stock
+# 		步数 + 1
+# 		如果stock开没了 reward - 10
+##########################################################################################
+
 import gymnasium as gym
 from gymnasium import spaces
 import numpy as np

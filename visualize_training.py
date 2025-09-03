@@ -187,7 +187,7 @@ def analyze_game_statistics(env, model, n_episodes=100):
 if __name__ == "__main__":
     import argparse
     from stable_baselines3 import PPO
-    from spider_solitaire_env import SpiderSolitaireEnv
+    from spider_solitaire_env_fixed import SpiderSolitaireEnvFixed
     
     parser = argparse.ArgumentParser(description='Visualize Spider Solitaire training')
     parser.add_argument('--log-dir', type=str, required=True,
@@ -209,7 +209,7 @@ if __name__ == "__main__":
     if args.model_path:
         print(f"\nAnalyzing model: {args.model_path}")
         model = PPO.load(args.model_path)
-        env = SpiderSolitaireEnv()
+        env = SpiderSolitaireEnvFixed()
         
         stats = analyze_game_statistics(env, model, args.n_episodes)
         
