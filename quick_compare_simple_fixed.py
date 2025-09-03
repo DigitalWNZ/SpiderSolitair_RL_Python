@@ -80,10 +80,17 @@ def quick_train_simple_dqn(episodes=100, max_steps_per_episode=500):
             episode_length += 1
             
             if done:
+                # Extract detailed info
+                game_result = info.get('game_result', 'UNKNOWN')
+                valid_moves = info.get('valid_moves', 0)
+                invalid_moves = info.get('invalid_moves', 0)
+                foundation_count = info.get('foundation_count', 0)
+                
                 if terminated:
                     print(f"[Simple DQN] Episode {episode + 1} - WON! Reward: {episode_reward:.2f}")
                 elif truncated:
                     print(f"[Simple DQN] Episode {episode + 1} - Truncated at step {episode_length}. Reward: {episode_reward:.2f}")
+                print(f"              Game: {game_result}, Valid/Invalid moves: {valid_moves}/{invalid_moves}, Sequences: {foundation_count}/8")
                 break
         
         episode_rewards.append(episode_reward)
@@ -113,6 +120,12 @@ def quick_train_simple_dqn(episodes=100, max_steps_per_episode=500):
         'win_rate': wins / episodes,
         'avg_reward': np.mean(episode_rewards),
         'final_20_avg': np.mean(episode_rewards[-20:]) if len(episode_rewards) >= 20 else np.mean(episode_rewards),
+        'last_episode_info': {
+            'game_result': game_result if 'game_result' in locals() else 'UNKNOWN',
+            'valid_moves': valid_moves if 'valid_moves' in locals() else 0,
+            'invalid_moves': invalid_moves if 'invalid_moves' in locals() else 0,
+            'foundation_count': foundation_count if 'foundation_count' in locals() else 0,
+        }
     }
 
 
@@ -162,8 +175,16 @@ def quick_train_simple_a2c(episodes=100, max_steps_per_episode=500):
                 
                 if done:
                     episodes_completed += 1
+                    
+                    # Extract info from the last state/rollout if available
+                    # Since we're in vectorized env, we need to check if info is available
+                    game_result = 'TRUNCATED' if current_episode_length >= max_steps_per_episode else 'COMPLETED'
+                    if current_episode_reward > 900:
+                        game_result = 'WON'
+                    
                     print(f"\n[Simple A2C] Completed Episode {episodes_completed}/{episodes}, "
                           f"Reward: {current_episode_reward:.2f}, Length: {current_episode_length}")
+                    print(f"              Game: {game_result}")
                     
                     episode_rewards.append(current_episode_reward)
                     episode_lengths.append(current_episode_length)
@@ -254,6 +275,12 @@ def quick_train_simple_ppo(episodes=100, max_steps_per_episode=500):
                 episode_reward += reward
                 episode_length += 1
                 done = terminated or truncated
+                
+                if done and ep == 0:  # Track first episode details
+                    game_result = info.get('game_result', 'UNKNOWN')
+                    valid_moves = info.get('valid_moves', 0)
+                    invalid_moves = info.get('invalid_moves', 0)
+                    foundation_count = info.get('foundation_count', 0)
             
             episode_rewards.append(episode_reward)
             episode_lengths.append(episode_length)
@@ -298,6 +325,12 @@ def quick_train_simple_ppo(episodes=100, max_steps_per_episode=500):
         'win_rate': wins / episodes,
         'avg_reward': np.mean(episode_rewards),
         'final_20_avg': np.mean(episode_rewards[-20:]) if len(episode_rewards) >= 20 else np.mean(episode_rewards),
+        'last_episode_info': {
+            'game_result': game_result if 'game_result' in locals() else 'UNKNOWN',
+            'valid_moves': valid_moves if 'valid_moves' in locals() else 0,
+            'invalid_moves': invalid_moves if 'invalid_moves' in locals() else 0,
+            'foundation_count': foundation_count if 'foundation_count' in locals() else 0,
+        }
     }
 
 
@@ -440,6 +473,18 @@ def generate_simple_report(results_list):
         report.append(f"- **Best Win Rate**: {best_win_alg} ({best_win_rate:.1%})")
         report.append(f"- **Best Average Reward**: {best_reward_alg} ({best_avg_reward:.1f})")
         report.append(f"- **Fastest Training**: {fastest_alg} ({fastest_training:.1f}s)")
+        
+        # Add episode details from last episodes
+        report.append("\n### Last Episode Details\n")
+        report.append("| Algorithm | Game Result | Valid Moves | Invalid Moves | Sequences |")
+        report.append("|-----------|-------------|-------------|---------------|-----------|")
+        
+        for r in results_list:
+            if 'last_episode_info' in r:
+                info = r['last_episode_info']
+                report.append(f"| {r['algorithm']} | {info['game_result']} | "
+                             f"{info['valid_moves']} | {info['invalid_moves']} | "
+                             f"{info['foundation_count']}/8 |")
     
     # Save results
     with open('results/simple_comparison_fixed/report.md', 'w') as f:

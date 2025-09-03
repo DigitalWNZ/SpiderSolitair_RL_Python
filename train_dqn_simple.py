@@ -280,6 +280,11 @@ class SimpleDQNAgent:
                 if self.losses:
                     avg_loss = np.mean(self.losses[-1000:])
                     print(f"  Avg Loss (last 1000): {avg_loss:.4f}")
+                
+                # Print detailed info from last episode
+                if 'game_result' in info:
+                    print(f"  Last episode: {info['game_result']}, Valid/Invalid: {info.get('valid_moves', 0)}/{info.get('invalid_moves', 0)}, "
+                          f"Sequences: {info.get('foundation_count', 0)}/8")
             
             # Save model
             if episode % save_freq == 0 and episode > 0:
@@ -434,6 +439,15 @@ def main():
     # Evaluate
     print("\nEvaluating final model...")
     agent.evaluate(n_episodes=10, render=False)
+    
+    # Print final training statistics
+    print("\n" + "="*60)
+    print("Final Training Statistics:")
+    print(f"Total episodes: {agent.total_episodes}")
+    print(f"Total wins: {agent.wins} ({agent.wins/agent.total_episodes:.2%})")
+    print(f"Average reward (last 1000): {np.mean(agent.episode_rewards[-1000:]):.2f}")
+    print(f"Average episode length (last 1000): {np.mean(agent.episode_lengths[-1000:]):.2f}")
+    print("="*60)
     
     env.close()
 

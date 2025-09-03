@@ -334,6 +334,13 @@ class DQNAgent:
                 print(f"Episode {episode}, Avg Reward: {avg_reward:.2f}, "
                       f"Avg Length: {avg_length:.1f}, Win Rate: {win_rate:.2%}, "
                       f"Epsilon: {self.epsilon:.3f}")
+                
+                # Print detailed episode info
+                if 'game_result' in info:
+                    print(f"  Game Result: {info.get('game_result', 'unknown')}")
+                    print(f"  Valid Moves: {info.get('valid_moves', 0)}")
+                    print(f"  Invalid Moves: {info.get('invalid_moves', 0)}")
+                    print(f"  Foundation Count: {info.get('foundation_count', 0)}")
             
             # Save model
             if episode % save_freq == 0 and episode > 0:
@@ -432,6 +439,15 @@ def main():
     
     # Plot results
     plot_training_results(rewards, lengths, "dqn_training_results.png")
+    
+    # Print final training statistics
+    print("\n=== Final Training Statistics ===")
+    print(f"Total episodes: {agent.total_episodes}")
+    print(f"Total wins: {agent.wins}")
+    print(f"Final win rate: {agent.wins / agent.total_episodes:.2%}")
+    print(f"Average reward (last 100 episodes): {np.mean(rewards[-100:]):.2f}")
+    print(f"Average length (last 100 episodes): {np.mean(lengths[-100:]):.1f}")
+    print(f"Final epsilon: {agent.epsilon:.3f}")
     
     env.close()
 

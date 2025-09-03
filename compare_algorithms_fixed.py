@@ -53,6 +53,16 @@ class MetricsCallback(BaseCallback):
             
             if reward > 900:  # Win condition
                 self.wins += 1
+            
+            # Log episode details periodically
+            if self.total_episodes % 100 == 0:
+                game_result = info.get('game_result', 'UNKNOWN')
+                valid_moves = info.get('valid_moves', 0)
+                invalid_moves = info.get('invalid_moves', 0)
+                foundation_count = info.get('foundation_count', 0)
+                print(f"  [PPO] Episode {self.total_episodes}: {game_result}, "
+                      f"Valid/Invalid: {valid_moves}/{invalid_moves}, "
+                      f"Sequences: {foundation_count}/8")
                 
         return True
 
@@ -122,6 +132,11 @@ def train_dqn(total_timesteps: int, max_steps_per_episode: int = 500) -> Dict:
             total_steps += 1
             
             if done:
+                # Extract detailed episode info
+                game_result = info.get('game_result', 'UNKNOWN')
+                valid_moves = info.get('valid_moves', 0)
+                invalid_moves = info.get('invalid_moves', 0)
+                foundation_count = info.get('foundation_count', 0)
                 break
         
         episode_rewards.append(episode_reward)
@@ -140,6 +155,9 @@ def train_dqn(total_timesteps: int, max_steps_per_episode: int = 500) -> Dict:
             win_rate = wins / episodes
             print(f"Episode {episodes}, Steps: {total_steps:,}/{total_timesteps:,}, "
                   f"Avg Reward: {avg_reward:.2f}, Win Rate: {win_rate:.2%}")
+            if 'game_result' in locals():
+                print(f"  Last episode: {game_result}, Valid/Invalid: {valid_moves}/{invalid_moves}, "
+                      f"Sequences: {foundation_count}/8")
     
     training_time = time.time() - start_time
     
@@ -466,6 +484,14 @@ def generate_report(results: List[Dict]):
     
     report.append("\n## Detailed Analysis\n")
     
+    # Add last episode details if available
+    report.append("\n### Training Progress\n")
+    report.append("The environment now tracks detailed episode information including:")
+    report.append("- Game result (WON/LOST/TRUNCATED)")
+    report.append("- Number of valid and invalid moves")
+    report.append("- Foundation count (completed sequences)")
+    report.append("- Episode length and rewards")
+    
     # Best performer analysis
     if results:
         best_win_rate = max(r['win_rate'] for r in results)
@@ -485,6 +511,8 @@ def generate_report(results: List[Dict]):
     report.append("- For highest win rate: Use the algorithm with best win rate")
     report.append("- For fastest experimentation: Use the algorithm with highest steps/second")
     report.append("- For best sample efficiency: Compare episodes needed to reach target performance")
+    report.append("- Monitor valid/invalid move ratios to assess learning quality")
+    report.append("- Track foundation counts to measure progress toward winning")
     
     # Save report
     with open('results/algorithm_comparison_fixed/report.md', 'w') as f:

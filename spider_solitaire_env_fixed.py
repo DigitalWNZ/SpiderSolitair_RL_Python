@@ -91,6 +91,7 @@ class SpiderSolitaireEnvFixed(gym.Env):
         
         # Reset step counter
         self.current_steps = 0
+        self._episode_reward = 0
         
         # Initialize deck (104 cards for 2-suit spider)
         self.deck = list(range(52)) * 2
@@ -118,6 +119,8 @@ class SpiderSolitaireEnvFixed(gym.Env):
         # Game state
         self.moves = 0
         self.score = 500  # Starting score
+        self.valid_moves = 0
+        self.invalid_moves = 0
         
         return self._get_observation(), self._get_info()
     
@@ -146,10 +149,13 @@ class SpiderSolitaireEnvFixed(gym.Env):
                     for i, card in enumerate(deal_cards):
                         self.tableau[i].append(card)
                     self.moves += 1
+                    self.valid_moves += 1
                 else:
                     reward = -10  # Invalid deal penalty
+                    self.invalid_moves += 1
             else:
                 reward = -10  # No stock penalty
+                self.invalid_moves += 1
         else:
             # Move action
             if self._is_valid_move(from_col, to_col, num_cards):
@@ -158,6 +164,7 @@ class SpiderSolitaireEnvFixed(gym.Env):
                 self.tableau[from_col] = self.tableau[from_col][:-num_cards]
                 self.tableau[to_col].extend(cards_to_move)
                 self.moves += 1
+                self.valid_moves += 1
                 
                 # Check for completed sequences
                 self._check_completed_sequences()
@@ -166,6 +173,7 @@ class SpiderSolitaireEnvFixed(gym.Env):
                 reward = 1
             else:
                 reward = -10  # Invalid move penalty
+                self.invalid_moves += 1
         
         # Update score
         self.score = max(0, self.score + reward)
@@ -185,7 +193,24 @@ class SpiderSolitaireEnvFixed(gym.Env):
             truncated = True
             reward -= 100  # Penalty for getting stuck
         
-        return self._get_observation(), reward, terminated, truncated, self._get_info()
+        # Track episode reward
+        if not hasattr(self, '_episode_reward'):
+            self._episode_reward = 0
+        self._episode_reward += reward
+        
+        info = self._get_info()
+        
+        # Add game result info when episode ends
+        if terminated or truncated:
+            if terminated:
+                info['game_result'] = 'WON' if len(self.foundation) == 8 else 'LOST'
+            else:
+                info['game_result'] = 'TRUNCATED'
+            info['episode_reward'] = self._episode_reward
+            # Reset episode reward for next episode
+            self._episode_reward = 0
+        
+        return self._get_observation(), reward, terminated, truncated, info
     
     def _has_valid_moves(self) -> bool:
         """Check if any valid moves exist."""
@@ -300,6 +325,11 @@ class SpiderSolitaireEnvFixed(gym.Env):
             'score': self.score,
             'current_steps': self.current_steps,
             'max_steps': self.max_steps,
+            'valid_moves': self.valid_moves,
+            'invalid_moves': self.invalid_moves,
+            'foundation_count': len(self.foundation),
+            'episode_reward': getattr(self, '_episode_reward', 0),
+            'episode_length': self.current_steps,
         }
     
     def render(self):

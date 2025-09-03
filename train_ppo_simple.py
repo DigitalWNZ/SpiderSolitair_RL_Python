@@ -71,36 +71,158 @@ class SimpleSpiderSolitaireFeaturesExtractor(BaseFeaturesExtractor):
 
 class TrainingCallback(BaseCallback):
     """
-    Custom callback for logging training metrics.
+    Custom callback for detailed episode tracking in Spider Solitaire.
+    Tracks game results, valid/invalid moves, and other episode statistics.
     """
     
     def __init__(self, verbose=0):
         super().__init__(verbose)
         self.episode_rewards = []
         self.episode_lengths = []
+        self.episode_details = []
         self.wins = 0
+        self.losses = 0
+        self.truncated = 0
         self.total_episodes = 0
+        
+        # Aggregate statistics
+        self.total_valid_moves = 0
+        self.total_invalid_moves = 0
+        self.total_moves = 0
         
     def _on_step(self) -> bool:
         # Check for episode end
         if self.locals.get('dones')[0]:
             self.total_episodes += 1
-            episode_reward = self.locals['rewards'][0]
-            self.episode_rewards.append(episode_reward)
             
-            # Check if won (high reward indicates win)
-            if episode_reward > 900:
+            # Get episode information from the environment info
+            info = self.locals.get('infos', [{}])[0]
+            episode_reward = info.get('episode_reward', 0)
+            
+            # Extract detailed episode information
+            game_result = info.get('game_result', 'UNKNOWN')
+            valid_moves = info.get('valid_moves', 0)
+            invalid_moves = info.get('invalid_moves', 0)
+            total_moves = info.get('moves', 0)
+            foundation_count = info.get('foundation_count', 0)
+            final_score = info.get('score', 0)
+            steps = info.get('current_steps', 0)
+            
+            # Update counters
+            if game_result == 'WON':
                 self.wins += 1
+            elif game_result == 'LOST':
+                self.losses += 1
+            elif game_result == 'TRUNCATED':
+                self.truncated += 1
+            
+            # Store episode details
+            episode_detail = {
+                'episode': self.total_episodes,
+                'result': game_result,
+                'reward': episode_reward,
+                'score': final_score,
+                'steps': steps,
+                'valid_moves': valid_moves,
+                'invalid_moves': invalid_moves,
+                'total_moves': total_moves,
+                'foundation_count': foundation_count,
+                'invalid_move_ratio': invalid_moves / max(total_moves, 1)
+            }
+            self.episode_details.append(episode_detail)
+            self.episode_rewards.append(episode_reward)
+            self.episode_lengths.append(steps)
+            
+            # Update aggregate statistics
+            self.total_valid_moves += valid_moves
+            self.total_invalid_moves += invalid_moves
+            self.total_moves += total_moves
             
             # Log every 100 episodes
             if self.total_episodes % 100 == 0:
-                win_rate = self.wins / self.total_episodes
-                avg_reward = np.mean(self.episode_rewards[-100:])
-                print(f"Episodes: {self.total_episodes}, "
-                      f"Win Rate: {win_rate:.2%}, "
-                      f"Avg Reward (last 100): {avg_reward:.2f}")
+                self._log_statistics()
+            
+            # Detailed log every 1000 episodes
+            if self.total_episodes % 1000 == 0:
+                self._log_detailed_statistics()
                 
         return True
+    
+    def _log_statistics(self):
+        """Log basic statistics."""
+        win_rate = self.wins / self.total_episodes
+        loss_rate = self.losses / self.total_episodes
+        truncated_rate = self.truncated / self.total_episodes
+        avg_reward = np.mean(self.episode_rewards[-100:])
+        avg_length = np.mean(self.episode_lengths[-100:])
+        
+        # Calculate invalid move ratio
+        recent_details = self.episode_details[-100:]
+        avg_invalid_ratio = np.mean([d['invalid_move_ratio'] for d in recent_details])
+        
+        print(f"\n{'='*60}")
+        print(f"Episodes: {self.total_episodes}")
+        print(f"Win Rate: {win_rate:.2%} | Loss Rate: {loss_rate:.2%} | Truncated: {truncated_rate:.2%}")
+        print(f"Avg Reward (last 100): {avg_reward:.2f}")
+        print(f"Avg Episode Length (last 100): {avg_length:.1f}")
+        print(f"Avg Invalid Move Ratio (last 100): {avg_invalid_ratio:.2%}")
+        print(f"{'='*60}\n")
+    
+    def _log_detailed_statistics(self):
+        """Log detailed statistics including move analysis."""
+        recent_details = self.episode_details[-1000:]
+        
+        # Calculate detailed statistics
+        won_episodes = [d for d in recent_details if d['result'] == 'WON']
+        lost_episodes = [d for d in recent_details if d['result'] == 'LOST']
+        truncated_episodes = [d for d in recent_details if d['result'] == 'TRUNCATED']
+        
+        print(f"\n{'='*80}")
+        print(f"DETAILED STATISTICS (Last 1000 episodes)")
+        print(f"{'='*80}")
+        
+        # Win/Loss/Truncated statistics
+        print(f"\nGame Results:")
+        print(f"  Won: {len(won_episodes)} ({len(won_episodes)/10:.1%})")
+        print(f"  Lost: {len(lost_episodes)} ({len(lost_episodes)/10:.1%})")
+        print(f"  Truncated: {len(truncated_episodes)} ({len(truncated_episodes)/10:.1%})")
+        
+        # Move statistics
+        if self.total_moves > 0:
+            print(f"\nMove Statistics (Total):")
+            print(f"  Total Moves: {self.total_moves}")
+            print(f"  Valid Moves: {self.total_valid_moves} ({self.total_valid_moves/self.total_moves:.1%})")
+            print(f"  Invalid Moves: {self.total_invalid_moves} ({self.total_invalid_moves/self.total_moves:.1%})")
+        
+        # Statistics by outcome
+        for outcome, episodes in [('Won', won_episodes), ('Lost', lost_episodes), ('Truncated', truncated_episodes)]:
+            if episodes:
+                avg_reward = np.mean([e['reward'] for e in episodes])
+                avg_steps = np.mean([e['steps'] for e in episodes])
+                avg_foundation = np.mean([e['foundation_count'] for e in episodes])
+                avg_invalid_ratio = np.mean([e['invalid_move_ratio'] for e in episodes])
+                
+                print(f"\n{outcome} Episodes:")
+                print(f"  Average Reward: {avg_reward:.2f}")
+                print(f"  Average Steps: {avg_steps:.1f}")
+                print(f"  Average Foundations: {avg_foundation:.2f}")
+                print(f"  Average Invalid Move Ratio: {avg_invalid_ratio:.2%}")
+        
+        print(f"{'='*80}\n")
+    
+    def get_final_statistics(self):
+        """Get final training statistics."""
+        return {
+            'total_episodes': self.total_episodes,
+            'wins': self.wins,
+            'losses': self.losses,
+            'truncated': self.truncated,
+            'win_rate': self.wins / max(self.total_episodes, 1),
+            'avg_reward': np.mean(self.episode_rewards) if self.episode_rewards else 0,
+            'total_valid_moves': self.total_valid_moves,
+            'total_invalid_moves': self.total_invalid_moves,
+            'invalid_move_ratio': self.total_invalid_moves / max(self.total_moves, 1)
+        }
 
 
 def make_env(rank, seed=0):
@@ -202,16 +324,35 @@ def train_spider_solitaire_simple(total_timesteps=1_000_000, n_envs=4, learning_
         progress_bar=False,  # Disable progress bar to avoid dependency issues
     )
     
+    # Print final training statistics
+    print("\n" + "="*80)
+    print("FINAL TRAINING STATISTICS")
+    print("="*80)
+    
+    final_stats = training_callback.get_final_statistics()
+    print(f"\nTotal Episodes: {final_stats['total_episodes']}")
+    print(f"Total Timesteps: {total_timesteps}")
+    print(f"\nGame Results:")
+    print(f"  Wins: {final_stats['wins']} ({final_stats['win_rate']:.2%})")
+    print(f"  Losses: {final_stats['losses']} ({final_stats['losses']/max(final_stats['total_episodes'], 1):.2%})")
+    print(f"  Truncated: {final_stats['truncated']} ({final_stats['truncated']/max(final_stats['total_episodes'], 1):.2%})")
+    print(f"\nPerformance Metrics:")
+    print(f"  Average Episode Reward: {final_stats['avg_reward']:.2f}")
+    print(f"  Total Valid Moves: {final_stats['total_valid_moves']:,}")
+    print(f"  Total Invalid Moves: {final_stats['total_invalid_moves']:,}")
+    print(f"  Invalid Move Ratio: {final_stats['invalid_move_ratio']:.2%}")
+    
     # Save final model
     model.save(os.path.join(model_dir, 'final_model'))
-    print(f"Training completed! Model saved to {model_dir}")
+    print(f"\nTraining completed! Model saved to {model_dir}")
+    print("="*80 + "\n")
     
     return model, env
 
 
 def evaluate_model(model_path, n_episodes=10, render=True):
     """
-    Evaluate a trained model.
+    Evaluate a trained model with detailed episode tracking.
     """
     # Load model
     model = PPO.load(model_path)
@@ -219,8 +360,13 @@ def evaluate_model(model_path, n_episodes=10, render=True):
     # Create environment
     env = SpiderSolitaireEnvFixed(render_mode="human" if render else None)
     
-    wins = 0
-    total_rewards = []
+    # Tracking variables
+    episode_results = []
+    
+    print(f"\n{'='*80}")
+    print(f"EVALUATING MODEL: {model_path}")
+    print(f"Episodes: {n_episodes}")
+    print(f"{'='*80}\n")
     
     for episode in range(n_episodes):
         obs, info = env.reset()
@@ -236,17 +382,76 @@ def evaluate_model(model_path, n_episodes=10, render=True):
             if render:
                 env.render()
         
-        total_rewards.append(episode_reward)
-        if episode_reward > 900:  # Win condition
-            wins += 1
-            
-        print(f"Episode {episode + 1}: Reward = {episode_reward:.2f}, "
-              f"Score = {info['score']}, Moves = {info['moves']}")
+        # Extract episode information
+        game_result = info.get('game_result', 'UNKNOWN')
+        valid_moves = info.get('valid_moves', 0)
+        invalid_moves = info.get('invalid_moves', 0)
+        total_moves = info.get('moves', 0)
+        foundation_count = info.get('foundation_count', 0)
+        final_score = info.get('score', 0)
+        steps = info.get('current_steps', 0)
+        
+        episode_data = {
+            'episode': episode + 1,
+            'result': game_result,
+            'reward': episode_reward,
+            'score': final_score,
+            'steps': steps,
+            'valid_moves': valid_moves,
+            'invalid_moves': invalid_moves,
+            'total_moves': total_moves,
+            'foundation_count': foundation_count,
+            'invalid_move_ratio': invalid_moves / max(total_moves, 1)
+        }
+        episode_results.append(episode_data)
+        
+        # Print episode details
+        print(f"Episode {episode + 1}:")
+        print(f"  Result: {game_result}")
+        print(f"  Reward: {episode_reward:.2f}")
+        print(f"  Score: {final_score}")
+        print(f"  Steps: {steps}")
+        print(f"  Moves: {total_moves} (Valid: {valid_moves}, Invalid: {invalid_moves})")
+        print(f"  Invalid Move Ratio: {episode_data['invalid_move_ratio']:.2%}")
+        print(f"  Foundations Completed: {foundation_count}/8")
+        print()
     
-    print(f"\nEvaluation Results:")
-    print(f"Win Rate: {wins/n_episodes:.2%}")
-    print(f"Average Reward: {np.mean(total_rewards):.2f}")
-    print(f"Std Reward: {np.std(total_rewards):.2f}")
+    # Calculate and display evaluation statistics
+    print(f"{'='*80}")
+    print("EVALUATION SUMMARY")
+    print(f"{'='*80}")
+    
+    wins = sum(1 for r in episode_results if r['result'] == 'WON')
+    losses = sum(1 for r in episode_results if r['result'] == 'LOST')
+    truncated = sum(1 for r in episode_results if r['result'] == 'TRUNCATED')
+    
+    print(f"\nGame Results:")
+    print(f"  Won: {wins} ({wins/n_episodes:.2%})")
+    print(f"  Lost: {losses} ({losses/n_episodes:.2%})")
+    print(f"  Truncated: {truncated} ({truncated/n_episodes:.2%})")
+    
+    avg_reward = np.mean([r['reward'] for r in episode_results])
+    std_reward = np.std([r['reward'] for r in episode_results])
+    avg_steps = np.mean([r['steps'] for r in episode_results])
+    avg_invalid_ratio = np.mean([r['invalid_move_ratio'] for r in episode_results])
+    avg_foundations = np.mean([r['foundation_count'] for r in episode_results])
+    
+    print(f"\nPerformance Metrics:")
+    print(f"  Average Reward: {avg_reward:.2f} (±{std_reward:.2f})")
+    print(f"  Average Steps: {avg_steps:.1f}")
+    print(f"  Average Invalid Move Ratio: {avg_invalid_ratio:.2%}")
+    print(f"  Average Foundations Completed: {avg_foundations:.2f}")
+    
+    # Statistics by outcome
+    for outcome in ['WON', 'LOST', 'TRUNCATED']:
+        outcome_episodes = [r for r in episode_results if r['result'] == outcome]
+        if outcome_episodes:
+            print(f"\n{outcome} Episodes ({len(outcome_episodes)}):")
+            print(f"  Average Reward: {np.mean([r['reward'] for r in outcome_episodes]):.2f}")
+            print(f"  Average Steps: {np.mean([r['steps'] for r in outcome_episodes]):.1f}")
+            print(f"  Average Invalid Move Ratio: {np.mean([r['invalid_move_ratio'] for r in outcome_episodes]):.2%}")
+    
+    print(f"\n{'='*80}\n")
     
     env.close()
 

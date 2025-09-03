@@ -145,6 +145,15 @@ class SimpleA2CAgent:
         self.critic_losses = []
         self.entropy_losses = []
         
+        # Detailed episode tracking
+        self.episode_details = deque(maxlen=1000)  # Store detailed info for recent episodes
+        self.env_episode_info = [{
+            'start_time': datetime.now(),
+            'steps': 0,
+            'rewards': [],
+            'actions': []
+        } for _ in range(n_envs)]
+        
     def compute_gae(
         self,
         rewards: torch.Tensor,
@@ -170,6 +179,41 @@ class SimpleA2CAgent:
         
         returns = advantages + values
         return returns, advantages
+    
+    def display_recent_episodes(self, n: int = 5):
+        """
+        Display details of the n most recent episodes.
+        """
+        if not self.episode_details:
+            print("No completed episodes yet.")
+            return
+        
+        print(f"\n=== Recent {min(n, len(self.episode_details))} Episodes ===")
+        recent_episodes = list(self.episode_details)[-n:]
+        
+        for i, ep in enumerate(recent_episodes):
+            print(f"\nEpisode {self.total_episodes - len(recent_episodes) + i + 1}:")
+            print(f"  Reward: {ep['reward']:.2f}")
+            print(f"  Length: {ep['length']} steps")
+            print(f"  Win: {'Yes' if ep['win'] else 'No'}")
+            print(f"  Duration: {ep['duration']:.2f}s")
+            print(f"  Final moves taken: {ep['final_moves'][-10:]}")  # Last 10 moves
+            if ep['foundation_count'] > 0:
+                print(f"  Foundation cards: {ep['foundation_count']}")
+            if ep['stock_count'] >= 0:
+                print(f"  Remaining stock: {ep['stock_count']}")
+        
+        # Overall statistics
+        all_rewards = [ep['reward'] for ep in self.episode_details]
+        all_lengths = [ep['length'] for ep in self.episode_details]
+        wins = sum(1 for ep in self.episode_details if ep['win'])
+        
+        print(f"\n=== Overall Statistics (last {len(self.episode_details)} episodes) ===")
+        print(f"  Average reward: {np.mean(all_rewards):.2f}")
+        print(f"  Average length: {np.mean(all_lengths):.1f}")
+        print(f"  Win rate: {wins/len(self.episode_details):.2%}")
+        print(f"  Best reward: {max(all_rewards):.2f}")
+        print(f"  Worst reward: {min(all_rewards):.2f}")
     
     def collect_rollouts(self, states: List[Dict], n_steps: int) -> Dict:
         """
@@ -230,13 +274,43 @@ class SimpleA2CAgent:
                 rewards.append(reward)
                 dones.append(done)
                 
-                # Track metrics
+                # Track episode info for each environment
+                self.env_episode_info[i]['steps'] += 1
+                self.env_episode_info[i]['rewards'].append(reward)
+                self.env_episode_info[i]['actions'].append(int(action))
+                
+                # Track metrics when episode completes
                 if done:
                     self.total_episodes += 1
-                    self.episode_rewards.append(info.get('episode_reward', reward))
-                    self.episode_lengths.append(info.get('episode_length', 1))
-                    if reward > 900:  # Win condition
+                    episode_reward = info.get('episode_reward', sum(self.env_episode_info[i]['rewards']))
+                    episode_length = info.get('episode_length', self.env_episode_info[i]['steps'])
+                    
+                    self.episode_rewards.append(episode_reward)
+                    self.episode_lengths.append(episode_length)
+                    
+                    is_win = episode_reward > 900  # Win condition
+                    if is_win:
                         self.wins += 1
+                    
+                    # Store detailed episode information
+                    episode_detail = {
+                        'reward': episode_reward,
+                        'length': episode_length,
+                        'win': is_win,
+                        'duration': (datetime.now() - self.env_episode_info[i]['start_time']).total_seconds(),
+                        'final_moves': self.env_episode_info[i]['actions'][-20:],  # Last 20 moves
+                        'foundation_count': int(next_state.get('foundation_count', 0)),
+                        'stock_count': int(next_state.get('stock_count', -1))
+                    }
+                    self.episode_details.append(episode_detail)
+                    
+                    # Reset episode tracking for this environment
+                    self.env_episode_info[i] = {
+                        'start_time': datetime.now(),
+                        'steps': 0,
+                        'rewards': [],
+                        'actions': []
+                    }
                     
                     # Reset the environment after done
                     if hasattr(self.env, 'envs'):  # Vectorized environment
@@ -393,8 +467,10 @@ class SimpleA2CAgent:
                 avg_length = np.mean(list(self.episode_lengths)) if self.episode_lengths else 0
                 win_rate = self.wins / self.total_episodes if self.total_episodes > 0 else 0
                 
+                print(f"\n{'='*60}")
                 print(f"Update {update}/{num_updates}, Episodes: {self.total_episodes}, "
-                      f"Avg Reward: {avg_reward:.2f}, Avg Length: {avg_length:.1f}, "
+                      f"Timesteps: {(update + 1) * self.n_steps * self.n_envs}")
+                print(f"Avg Reward: {avg_reward:.2f}, Avg Length: {avg_length:.1f}, "
                       f"Win Rate: {win_rate:.2%}")
                 
                 if self.losses:
@@ -402,12 +478,62 @@ class SimpleA2CAgent:
                           f"Actor: {np.mean(self.actor_losses[-100:]):.4f}, "
                           f"Critic: {np.mean(self.critic_losses[-100:]):.4f}, "
                           f"Entropy: {np.mean(self.entropy_losses[-100:]):.4f}")
+                
+                # Display recent episode details
+                if update % (log_interval * 5) == 0:  # Every 5 log intervals
+                    self.display_recent_episodes(n=5)
             
             # Save checkpoint
             if update % 1000 == 0 and update > 0:
                 self.save_model(f"simple_a2c_spider_{update}.pt")
         
+        # Display final statistics
+        self.display_final_statistics()
+        
         return self.episode_rewards, self.episode_lengths
+    
+    def display_final_statistics(self):
+        """
+        Display comprehensive statistics at the end of training.
+        """
+        print(f"\n{'='*80}")
+        print("FINAL TRAINING STATISTICS")
+        print(f"{'='*80}")
+        
+        print(f"\nTotal episodes completed: {self.total_episodes}")
+        print(f"Total wins: {self.wins}")
+        print(f"Overall win rate: {self.wins/self.total_episodes:.2%}" if self.total_episodes > 0 else "N/A")
+        
+        if self.episode_rewards:
+            all_rewards = list(self.episode_rewards)
+            all_lengths = list(self.episode_lengths)
+            
+            print(f"\nReward Statistics:")
+            print(f"  Mean: {np.mean(all_rewards):.2f}")
+            print(f"  Std: {np.std(all_rewards):.2f}")
+            print(f"  Min: {np.min(all_rewards):.2f}")
+            print(f"  Max: {np.max(all_rewards):.2f}")
+            print(f"  Median: {np.median(all_rewards):.2f}")
+            
+            print(f"\nEpisode Length Statistics:")
+            print(f"  Mean: {np.mean(all_lengths):.1f}")
+            print(f"  Std: {np.std(all_lengths):.1f}")
+            print(f"  Min: {np.min(all_lengths)}")
+            print(f"  Max: {np.max(all_lengths)}")
+            
+            # Recent performance (last 100 episodes)
+            if len(all_rewards) >= 100:
+                recent_rewards = all_rewards[-100:]
+                recent_wins = sum(1 for r in recent_rewards if r > 900)
+                print(f"\nLast 100 Episodes:")
+                print(f"  Average reward: {np.mean(recent_rewards):.2f}")
+                print(f"  Win rate: {recent_wins/100:.2%}")
+        
+        # Display last 10 episodes in detail
+        print(f"\n{'='*80}")
+        print("LAST 10 EPISODES DETAIL")
+        print(f"{'='*80}")
+        self.display_recent_episodes(n=10)
     
     def save_model(self, filename: str):
         """
@@ -420,6 +546,7 @@ class SimpleA2CAgent:
             'episode_lengths': list(self.episode_lengths),
             'wins': self.wins,
             'total_episodes': self.total_episodes,
+            'episode_details': list(self.episode_details)[-100:],  # Save last 100 episodes
         }
         torch.save(checkpoint, filename)
         print(f"Model saved to {filename}")
@@ -435,6 +562,11 @@ class SimpleA2CAgent:
         self.episode_lengths = deque(checkpoint['episode_lengths'], maxlen=1000)
         self.wins = checkpoint['wins']
         self.total_episodes = checkpoint['total_episodes']
+        
+        # Load episode details if available
+        if 'episode_details' in checkpoint:
+            self.episode_details = deque(checkpoint['episode_details'], maxlen=1000)
+        
         print(f"Model loaded from {filename}")
     
     def evaluate(self, n_episodes: int = 10, render: bool = False):
@@ -540,15 +672,30 @@ def main():
         n_steps=5,
     )
     
+    # Record training start time
+    training_start_time = datetime.now()
+    
     # Train
     total_timesteps = 1_000_000
     rewards, lengths = agent.train(total_timesteps, log_interval=100)
+    
+    # Calculate training duration
+    training_duration = (datetime.now() - training_start_time).total_seconds()
     
     # Save final model
     agent.save_model("simple_a2c_spider_final.pt")
     
     # Plot results
     plot_training_results(list(rewards), list(lengths), "simple_a2c_training_results.png")
+    
+    # Print training summary
+    print(f"\n{'='*80}")
+    print(f"TRAINING COMPLETED")
+    print(f"{'='*80}")
+    print(f"Training duration: {training_duration/60:.1f} minutes")
+    print(f"Total timesteps: {total_timesteps:,}")
+    print(f"Timesteps per second: {total_timesteps/training_duration:.1f}")
+    print(f"Episodes per minute: {agent.total_episodes/(training_duration/60):.1f}")
     
     # Evaluate
     print("\nEvaluating final model...")
