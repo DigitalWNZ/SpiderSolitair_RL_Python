@@ -1,8 +1,8 @@
 # Spider Solitaire Simplified RL Comparison Report (Fixed)
 
-Generated on: 2025-09-03 20:50:50
+Generated on: 2025-09-03 15:46:28
 
-## Summary Results (5 episodes each)
+## Summary Results (1000 episodes each)
 
 ### Simplified Network Architecture:
 - **Conv Layers**: 2 layers (16→32 channels)
@@ -16,19 +16,19 @@ Generated on: 2025-09-03 20:50:50
 
 | Algorithm | Win Rate | Avg Reward | Final 20 Avg | Training Time |
 |-----------|----------|------------|--------------|---------------|
-| Simple DQN | 0.0% | -465.0 | -465.0 | 17.4s |
-| Simple A2C | 0.0% | -488.2 | -488.2 | 4.7s |
-| Simple PPO | 0.0% | -5050.0 | -5050.0 | 7.7s |
+| Simple DQN | 0.0% | -906.3 | -872.6 | 6849.0s |
+| Simple A2C | 0.0% | -939.6 | -720.5 | 2474.9s |
+| Simple PPO | 0.0% | -10049.5 | -10049.5 | 1124.7s |
 
 ## Analysis
 
 - **Best Win Rate**: Simple DQN (0.0%)
-- **Best Average Reward**: Simple DQN (-465.0)
-- **Fastest Training**: Simple A2C (4.7s)
+- **Best Average Reward**: Simple DQN (-906.3)
+- **Fastest Training**: Simple PPO (1124.7s)
 
 ### Last Episode Details
 
 | Algorithm | Game Result | Valid Moves | Invalid Moves | Sequences |
 |-----------|-------------|-------------|---------------|-----------|
-| Simple DQN | TRUNCATED | 500 | 0 | 0/8 |
-| Simple PPO | TRUNCATED | 0 | 500 | 0/8 |
+| Simple DQN | TRUNCATED | 1000 | 0 | 0/8 |
+| Simple PPO | TRUNCATED | 0 | 1000 | 0/8 |
