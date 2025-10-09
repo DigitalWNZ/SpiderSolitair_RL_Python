@@ -30,15 +30,17 @@ class SpiderSolitaireEnv(gym.Env):
     RANKS = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
     RANK_VALUES = {rank: i for i, rank in enumerate(RANKS)}
     
-    def __init__(self, render_mode: Optional[str] = None):
+    def __init__(self, render_mode: Optional[str] = None, max_steps: int = 500):
         self.render_mode = render_mode
-        
+        self.max_steps = max_steps
+
         # Game state
         self.tableau = [[] for _ in range(10)]  # 10 columns
         self.stock = []  # Remaining cards to deal
         self.foundation = []  # Completed sequences
         self.score = 0
         self.moves = 0
+        self.current_step = 0
         
         # Define observation space
         # Maximum cards in a column: 19 (theoretical max)
@@ -86,40 +88,52 @@ class SpiderSolitaireEnv(gym.Env):
         self.foundation = []
         self.score = 500  # Starting score
         self.moves = 0
-        
+        self.current_step = 0
+
         return self._get_obs(), self._get_info()
     
-    def step(self, action: np.ndarray):
+    def step(self, action):
+        # Convert to numpy array if needed and ensure it's iterable
+        if isinstance(action, (int, np.integer)):
+            raise TypeError("Base environment expects array action [action_type, from_col, to_col, num_cards]")
+        if not isinstance(action, np.ndarray):
+            action = np.array(action)
+        if action.ndim == 0:  # 0-d array
+            action = action.reshape(1)
         action_type, from_col, to_col, num_cards = action
-        
+
+        self.current_step += 1
+
         terminated = False
         reward = 0
-        
+
         if action_type == 0:  # Move cards
             if self._is_valid_move(from_col, to_col, num_cards):
                 reward = self._move_cards(from_col, to_col, num_cards)
                 self.moves += 1
                 self.score -= 1  # Penalty for each move
-                
+
                 # Check for completed sequences
                 self._check_completed_sequences()
-                
+
                 # Check if game is won
                 if len(self.foundation) == 8:
                     terminated = True
                     reward += 1000  # Win bonus
             else:
                 reward = -10  # Invalid move penalty
-                
+
         elif action_type == 1:  # Deal from stock
             if len(self.stock) > 0:
                 self._deal_from_stock()
                 self.moves += 1
             else:
                 reward = -10  # No stock available
-        
-        truncated = False  # Could add move limit
-        
+
+        truncated = self.current_step >= self.max_steps
+        if truncated:
+            reward -= 50  # Penalty for exceeding max steps
+
         return self._get_obs(), reward, terminated, truncated, self._get_info()
     
     def _is_valid_move(self, from_col: int, to_col: int, num_cards: int) -> bool:
@@ -172,13 +186,13 @@ class SpiderSolitaireEnv(gym.Env):
         cards_to_move = self.tableau[from_col][-num_cards:]
         self.tableau[from_col] = self.tableau[from_col][:-num_cards]
         self.tableau[to_col].extend(cards_to_move)
-        
+
         # Flip face-down card if exposed
         if self.tableau[from_col] and not self.tableau[from_col][-1]['face_up']:
             self.tableau[from_col][-1]['face_up'] = True
             return 5  # Reward for revealing a card
-        
-        return 0
+
+        return 0  # Neutral reward for valid moves
     
     def _deal_from_stock(self):
         """Deal one card from stock to each column."""
@@ -244,6 +258,8 @@ class SpiderSolitaireEnv(gym.Env):
             'score': self.score,
             'moves': self.moves,
             'valid_moves': self._count_valid_moves(),
+            'current_step': self.current_step,
+            'max_step': self.max_steps,
         }
     
     def _count_valid_moves(self) -> int:
@@ -280,6 +296,7 @@ class SpiderSolitaireEnv(gym.Env):
         lines = []
         lines.append(f"Spider Solitaire - Score: {self.score}, Moves: {self.moves}")
         lines.append(f"Stock: {len(self.stock)} piles, Foundation: {len(self.foundation)}/8")
+        lines.append(f"Steps: {self.current_step}/{self.max_steps}")
         lines.append("-" * 50)
         
         # Find max height
