@@ -1,4 +1,5 @@
 import gymnasium as gym
+from gymnasium import spaces
 import numpy as np
 import torch
 import torch.nn as nn
@@ -12,6 +13,51 @@ import os
 from datetime import datetime
 
 from spide_solitaire_env_faceup import SpiderSolitaireEnv
+from spider_solitaire_masked_env_faceup import MaskedSpiderSolitaireEnvFaceup
+
+
+class ActionMaskingWrapper(gym.Wrapper):
+    """
+    Wrapper to handle action masking for stable-baselines3.
+    Automatically filters invalid actions before they're taken.
+    """
+    def __init__(self, env):
+        super().__init__(env)
+        # Remove action_mask from observation space for SB3 compatibility
+        self.observation_space = spaces.Dict({
+            'tableau': env.observation_space['tableau'],
+            'stock_count': env.observation_space['stock_count'],
+            'foundation_count': env.observation_space['foundation_count'],
+        })
+
+    def reset(self, **kwargs):
+        obs, info = self.env.reset(**kwargs)
+        # Store mask internally but don't expose it in observation
+        self._current_mask = obs.pop('action_mask', None)
+        return obs, info
+
+    def step(self, action):
+        # Convert action to scalar if needed
+        if isinstance(action, np.ndarray):
+            if action.ndim == 0:
+                action = int(action)
+            elif action.size == 1:
+                action = int(action.item())
+            else:
+                # For multi-dimensional arrays, take first element
+                action = int(action.flatten()[0])
+
+        # If we have a mask, validate the action
+        if self._current_mask is not None:
+            valid_actions = np.where(self._current_mask > 0)[0]
+            if len(valid_actions) > 0 and action not in valid_actions:
+                # Replace invalid action with random valid action
+                action = int(np.random.choice(valid_actions))
+
+        obs, reward, terminated, truncated, info = self.env.step(action)
+        # Store mask internally
+        self._current_mask = obs.pop('action_mask', None)
+        return obs, reward, terminated, truncated, info
 
 
 class SimpleSpiderSolitaireFeaturesExtractor(BaseFeaturesExtractor):
@@ -113,8 +159,8 @@ class TrainingCallback(BaseCallback):
             steps = info.get('current_step', 0)
             max_step = info.get('max_step', 500)
 
-            # Determine game result based on foundation count and truncation (2 sequences)
-            if foundation_count >= 2:  # Win condition (changed from 4 to 2)
+            # Determine game result based on foundation count and truncation (1 sequence)
+            if foundation_count >= 1:  # Win condition (changed from 2 to 1)
                 game_result = 'WON'
                 self.wins += 1
             elif steps >= max_step:
@@ -223,10 +269,11 @@ class TrainingCallback(BaseCallback):
 
 def make_env(rank, seed=0, max_steps=500):
     """
-    Utility function for multiprocessed env.
+    Utility function for multiprocessed env with action masking.
     """
     def _init():
-        env = SpiderSolitaireEnv(max_steps=max_steps)
+        env = MaskedSpiderSolitaireEnvFaceup(max_steps=max_steps)
+        env = ActionMaskingWrapper(env)
         env = Monitor(env)
         env.reset(seed=seed + rank)
         return env
@@ -259,15 +306,21 @@ def train_spider_solitaire_simple(total_timesteps=1_000_000, n_envs=4, learning_
     print("Policy/Value networks: 128→128 (single layer each)")
     print(f"Max steps per episode: {max_steps}")
 
-    # Environment setup
+    # Environment setup with action masking
+    def env_fn():
+        env = MaskedSpiderSolitaireEnvFaceup(max_steps=max_steps)
+        env = ActionMaskingWrapper(env)
+        return env
+
     env = make_vec_env(
-        lambda: SpiderSolitaireEnv(max_steps=max_steps),
+        env_fn,
         n_envs=n_envs,
         vec_env_cls=SubprocVecEnv
     )
 
-    # Evaluation environment
-    eval_env = SpiderSolitaireEnv(max_steps=max_steps)
+    # Evaluation environment with action masking
+    eval_env = MaskedSpiderSolitaireEnvFaceup(max_steps=max_steps)
+    eval_env = ActionMaskingWrapper(eval_env)
     eval_env = Monitor(eval_env)
 
     # Simplified PPO hyperparameters
@@ -358,8 +411,9 @@ def evaluate_model(model_path, n_episodes=10, render=True, max_steps=500):
     # Load model
     model = PPO.load(model_path)
 
-    # Create environment
-    env = SpiderSolitaireEnv(render_mode="human" if render else None, max_steps=max_steps)
+    # Create environment with action masking
+    env = MaskedSpiderSolitaireEnvFaceup(render_mode="human" if render else None, max_steps=max_steps)
+    env = ActionMaskingWrapper(env)
 
     # Tracking variables
     episode_results = []
@@ -396,8 +450,8 @@ def evaluate_model(model_path, n_episodes=10, render=True, max_steps=500):
         final_score = info.get('score', 0)
         steps = info.get('current_step', 0)
 
-        # Determine game result (2 sequences)
-        if foundation_count >= 2:  # Win condition (changed from 4 to 2)
+        # Determine game result (1 sequence)
+        if foundation_count >= 1:  # Win condition (changed from 2 to 1)
             game_result = 'WON'
         elif steps >= max_steps:
             game_result = 'TRUNCATED'

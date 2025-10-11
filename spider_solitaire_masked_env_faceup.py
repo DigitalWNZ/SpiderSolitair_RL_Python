@@ -23,7 +23,7 @@ class MaskedSpiderSolitaireEnvFaceup(SpiderSolitaireEnv):
         self.observation_space = spaces.Dict({
             'tableau': spaces.Box(0, 26, shape=(10, 19), dtype=np.int8),
             'stock_count': spaces.Box(0, 5, shape=(1,), dtype=np.int8),
-            'foundation_count': spaces.Box(0, 8, shape=(1,), dtype=np.int8),
+            'foundation_count': spaces.Box(0, 1, shape=(1,), dtype=np.int8),
             'action_mask': spaces.Box(0, 1, shape=(self.action_space.nvec.prod(),), dtype=np.int8),
         })
 

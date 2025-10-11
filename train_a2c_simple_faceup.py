@@ -292,7 +292,7 @@ class SimpleA2CAgent:
                     foundation_count_val = next_state.get('foundation_count', [0])[0] if isinstance(next_state.get('foundation_count'), np.ndarray) else next_state.get('foundation_count', 0)
                     foundation_count = int(foundation_count_val)
 
-                    is_win = foundation_count >= 2  # Win condition: completed 2 sequences (changed from 4)
+                    is_win = foundation_count >= 1  # Win condition: completed 1 sequence (changed from 2)
                     if is_win:
                         self.wins += 1
 
@@ -617,9 +617,9 @@ class SimpleA2CAgent:
                     eval_env.render()
 
             rewards.append(episode_reward)
-            # Check foundation_count to determine win (2 sequences)
+            # Check foundation_count to determine win (1 sequence)
             foundation_count_val = info.get('foundation_count', [0])[0] if isinstance(info.get('foundation_count'), np.ndarray) else info.get('foundation_count', 0)
-            if int(foundation_count_val) >= 2:  # Win condition (changed from 4 to 2)
+            if int(foundation_count_val) >= 1:  # Win condition (changed from 2 to 1)
                 wins += 1
 
             print(f"Episode {episode + 1}: Reward = {episode_reward:.2f}")

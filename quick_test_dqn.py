@@ -55,9 +55,9 @@ def quick_test(num_episodes=100):
                 foundation_count_val = info.get('foundation_count', [0])[0] if isinstance(info.get('foundation_count'), np.ndarray) else info.get('foundation_count', 0)
                 foundation_count = int(foundation_count_val)
 
-                if foundation_count >= 2:  # Win condition: 2 sequences (changed from 4)
+                if foundation_count >= 1:  # Win condition: 1 sequence (changed from 2)
                     wins += 1
-                    print(f"Episode {episode + 1}: WON! Reward: {episode_reward:.2f}, Length: {episode_length}, Sequences: {foundation_count}/2")
+                    print(f"Episode {episode + 1}: WON! Reward: {episode_reward:.2f}, Length: {episode_length}, Sequences: {foundation_count}/1")
 
                 episode_rewards.append(episode_reward)
                 episode_lengths.append(episode_length)
@@ -70,7 +70,7 @@ def quick_test(num_episodes=100):
             avg_reward = np.mean(episode_rewards[-10:])
             avg_sequences = np.mean(sequences_completed[-10:])
             print(f"Episode {episode + 1}/{num_episodes}: Avg Reward: {avg_reward:.2f}, "
-                  f"Win Rate: {wins/(episode+1):.2%}, Avg Sequences: {avg_sequences:.2f}/2, "
+                  f"Win Rate: {wins/(episode+1):.2%}, Avg Sequences: {avg_sequences:.2f}/1, "
                   f"Epsilon: {agent.epsilon:.3f}")
 
     print("\n" + "="*60)
@@ -79,8 +79,8 @@ def quick_test(num_episodes=100):
     print(f"Total Wins: {wins}/{num_episodes} ({wins/num_episodes:.1%})")
     print(f"Average Reward: {np.mean(episode_rewards):.2f}")
     print(f"Average Episode Length: {np.mean(episode_lengths):.1f}")
-    print(f"Average Sequences Completed: {np.mean(sequences_completed):.2f}/2")
-    print(f"Best Sequences: {np.max(sequences_completed)}/2")
+    print(f"Average Sequences Completed: {np.mean(sequences_completed):.2f}/1")
+    print(f"Best Sequences: {np.max(sequences_completed)}/1")
     print(f"Best Reward: {np.max(episode_rewards):.2f}")
     print("="*60)
 

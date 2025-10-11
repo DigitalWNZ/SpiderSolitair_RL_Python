@@ -21,7 +21,7 @@ class SpiderSolitaireEnv(gym.Env):
     - Initial deal: 54 cards (6,6,6,6,5,5,5,5,5,5 per column)
     - Face-down cards except last card in each column
     - 5 stock piles with 10 cards each (50 cards total)
-    - Goal: Create 2 complete sequences (K to A) of the same suit (MODIFIED from 4)
+    - Goal: Create 1 complete sequence (K to A) of the same suit (MODIFIED from 2)
     """
     
     metadata = {"render_modes": ["human", "ansi"], "render_fps": 4}
@@ -40,6 +40,7 @@ class SpiderSolitaireEnv(gym.Env):
         self.foundation = []  # Completed sequences
         self.moves = 0
         self.current_step = 0
+        self.move_history = []  # Track recent moves to detect back-and-forth
         
         # Define observation space
         # Maximum cards in a column: 19 (theoretical max)
@@ -47,7 +48,7 @@ class SpiderSolitaireEnv(gym.Env):
         self.observation_space = spaces.Dict({
             'tableau': spaces.Box(low=0, high=26, shape=(10, 19), dtype=np.int8),
             'stock_count': spaces.Box(low=0, high=5, shape=(1,), dtype=np.int8),
-            'foundation_count': spaces.Box(low=0, high=2, shape=(1,), dtype=np.int8),
+            'foundation_count': spaces.Box(low=0, high=1, shape=(1,), dtype=np.int8),
         })
         
         # Define action space
@@ -87,6 +88,7 @@ class SpiderSolitaireEnv(gym.Env):
         self.foundation = []
         self.moves = 0
         self.current_step = 0
+        self.move_history = []  # Reset move history
 
         return self._get_obs(), self._get_info()
     
@@ -107,14 +109,21 @@ class SpiderSolitaireEnv(gym.Env):
 
         if action_type == 0:  # Move cards
             if self._is_valid_move(from_col, to_col, num_cards):
+                # Check if this move reverses a recent move (back-and-forth)
+                reverse_penalty = self._check_reverse_move(from_col, to_col, num_cards)
+
                 reward = self._move_cards(from_col, to_col, num_cards)
+                reward += reverse_penalty  # Apply penalty if reversing
                 self.moves += 1
+
+                # Record this move
+                self._record_move(from_col, to_col, num_cards)
 
                 # Check for completed sequences
                 reward += self._check_completed_sequences()
 
-                # Check if game is won (2 sequences instead of 4)
-                if len(self.foundation) == 2:
+                # Check if game is won (1 sequence instead of 2)
+                if len(self.foundation) == 1:
                     terminated = True
                     reward += 1000  # Win bonus
             else:
@@ -124,6 +133,8 @@ class SpiderSolitaireEnv(gym.Env):
             if len(self.stock) > 0:
                 self._deal_from_stock()
                 self.moves += 1
+                # Clear move history after dealing (game state changes significantly)
+                self.move_history = []
             else:
                 reward = -10  # No stock available
 
@@ -186,6 +197,10 @@ class SpiderSolitaireEnv(gym.Env):
 
         reward = 0
 
+        # Reward for moving multiple cards at once (encourages efficient play)
+        if num_cards > 1:
+            reward += (num_cards - 1) * 1.0  # +1 for 2 cards, +2 for 3 cards, etc.
+
         # Flip face-down card if exposed
         if self.tableau[from_col] and not self.tableau[from_col][-1]['face_up']:
             self.tableau[from_col][-1]['face_up'] = True
@@ -241,14 +256,35 @@ class SpiderSolitaireEnv(gym.Env):
         """Check if cards form a complete K to A sequence."""
         if len(cards) != 13:
             return False
-        
+
         for i, card in enumerate(cards):
             if not card['face_up']:
                 return False
             if card['rank'] != 12 - i:  # K=12, Q=11, ..., A=0
                 return False
-        
+
         return True
+
+    def _record_move(self, from_col: int, to_col: int, num_cards: int):
+        """Record a move in history (keep last 5 moves)."""
+        move = (from_col, to_col, num_cards)
+        self.move_history.append(move)
+        # Keep only last 5 moves to detect recent back-and-forth
+        if len(self.move_history) > 5:
+            self.move_history.pop(0)
+
+    def _check_reverse_move(self, from_col: int, to_col: int, num_cards: int) -> float:
+        """
+        Check if current move reverses a recent move (back-and-forth pattern).
+        Returns negative reward if reversal detected.
+        """
+        # Check last 3 moves for a reversal
+        for i in range(max(0, len(self.move_history) - 3), len(self.move_history)):
+            prev_from, prev_to, prev_num = self.move_history[i]
+            # Detect if we're moving cards back to where they came from
+            if prev_from == to_col and prev_to == from_col and prev_num == num_cards:
+                return -2.0  # Reduced penalty (was -5.0, too harsh for unavoidable reversals)
+        return 0.0
     
     def _get_obs(self) -> Dict[str, np.ndarray]:
         """Get current observation."""
@@ -310,7 +346,7 @@ class SpiderSolitaireEnv(gym.Env):
         """Render game state as ASCII text."""
         lines = []
         lines.append(f"Spider Solitaire - Moves: {self.moves}")
-        lines.append(f"Stock: {len(self.stock)} piles, Foundation: {len(self.foundation)}/2")
+        lines.append(f"Stock: {len(self.stock)} piles, Foundation: {len(self.foundation)}/1")
         lines.append(f"Steps: {self.current_step}/{self.max_steps}")
         lines.append("-" * 50)
         

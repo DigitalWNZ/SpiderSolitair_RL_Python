@@ -94,25 +94,27 @@ def quick_train_simple_dqn(episodes=100, max_steps_per_episode=500):
 
                 current_step = info.get('current_step', episode_length)
 
-                # Determine game result (2 sequences)
-                if foundation_count >= 2:  # Win condition (changed from 4 to 2)
+                # Determine game result (1 sequence)
+                if foundation_count >= 1:  # Win condition (changed from 2 to 1)
                     game_result = 'WON'
                 elif current_step >= max_steps_per_episode:
                     game_result = 'TRUNCATED'
                 else:
                     game_result = 'LOST'
 
-                if terminated:
+                if game_result == 'WON':
                     print(f"[Simple DQN] Episode {episode + 1} - WON! Reward: {episode_reward:.2f}")
-                elif truncated:
+                elif game_result == 'TRUNCATED':
                     print(f"[Simple DQN] Episode {episode + 1} - Truncated at step {episode_length}. Reward: {episode_reward:.2f}")
-                print(f"              Game: {game_result}, Valid moves: {valid_moves}, Sequences: {foundation_count}/2")
+                else:
+                    print(f"[Simple DQN] Episode {episode + 1} - Lost at step {episode_length}. Reward: {episode_reward:.2f}")
+                print(f"              Game: {game_result}, Valid moves: {valid_moves}, Sequences: {foundation_count}/1")
                 break
 
         episode_rewards.append(episode_reward)
         episode_lengths.append(episode_length)
 
-        if foundation_count >= 2:  # Win condition (changed from 4 to 2)
+        if foundation_count >= 1:  # Win condition (changed from 2 to 1)
             wins += 1
 
         # Update epsilon
@@ -197,8 +199,8 @@ def quick_train_simple_a2c(episodes=100, max_steps_per_episode=500):
                     foundation_count_val = current_state.get('foundation_count', [0])[0] if isinstance(current_state.get('foundation_count'), np.ndarray) else current_state.get('foundation_count', 0)
                     foundation_count = int(foundation_count_val)
 
-                    # Determine game result based on foundation_count (2 sequences)
-                    if foundation_count >= 2:  # Win condition (changed from 4 to 2)
+                    # Determine game result based on foundation_count (1 sequence)
+                    if foundation_count >= 1:  # Win condition (changed from 2 to 1)
                         game_result = 'WON'
                         is_win = True
                     elif current_episode_length >= max_steps_per_episode:
@@ -210,7 +212,7 @@ def quick_train_simple_a2c(episodes=100, max_steps_per_episode=500):
 
                     print(f"\n[Simple A2C] Completed Episode {episodes_completed}/{episodes}, "
                           f"Reward: {current_episode_reward:.2f}, Length: {current_episode_length}")
-                    print(f"              Game: {game_result}, Sequences: {foundation_count}/2")
+                    print(f"              Game: {game_result}, Sequences: {foundation_count}/1")
 
                     episode_rewards.append(current_episode_reward)
                     episode_lengths.append(current_episode_length)
@@ -283,7 +285,10 @@ def quick_train_simple_ppo(episodes=100, max_steps_per_episode=500):
 
         # Evaluate the trained model to get actual performance
         print(f"\n[Simple PPO] Evaluating trained model...")
-        eval_env = SpiderSolitaireEnv(max_steps=max_steps_per_episode)
+        from spider_solitaire_masked_env_faceup import MaskedSpiderSolitaireEnvFaceup
+        from train_ppo_simple_faceup import ActionMaskingWrapper
+        eval_env = MaskedSpiderSolitaireEnvFaceup(max_steps=max_steps_per_episode)
+        eval_env = ActionMaskingWrapper(eval_env)
 
         episode_rewards = []
         episode_lengths = []
@@ -314,8 +319,8 @@ def quick_train_simple_ppo(episodes=100, max_steps_per_episode=500):
 
                     current_step = info.get('current_step', episode_length)
 
-                    # Determine game result (2 sequences)
-                    if foundation_count >= 2:  # Win condition (changed from 4 to 2)
+                    # Determine game result (1 sequence)
+                    if foundation_count >= 1:  # Win condition (changed from 2 to 1)
                         game_result = 'WON'
                     elif current_step >= max_steps_per_episode:
                         game_result = 'TRUNCATED'
@@ -325,7 +330,7 @@ def quick_train_simple_ppo(episodes=100, max_steps_per_episode=500):
             episode_rewards.append(episode_reward)
             episode_lengths.append(episode_length)
             # Check if actually won (foundation_count >= 2)
-            if foundation_count >= 2:  # Win condition (changed from 4 to 2)
+            if foundation_count >= 1:  # Win condition (changed from 2 to 1)
                 wins += 1
 
         eval_env.close()
@@ -388,7 +393,7 @@ def plot_simple_comparison(results_list):
 
     os.makedirs("results/simple_comparison_faceup", exist_ok=True)
 
-    fig, axes = plt.subplots(2, 2, figsize=(12, 10))
+    fig, axes = plt.subplots(3, 2, figsize=(15, 15))
     fig.suptitle('Spider Solitaire Simplified RL Algorithm Comparison (Faceup)', fontsize=16)
 
     colors = {'Simple PPO': 'blue', 'Simple DQN': 'red', 'Simple A2C': 'green'}
@@ -455,6 +460,39 @@ def plot_simple_comparison(results_list):
         ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 1,
                 f'{time:.1f}s', ha='center', va='bottom')
     ax.grid(True, alpha=0.3, axis='y')
+
+    # 5. Raw Rewards by Episode
+    ax = axes[2, 0]
+    for results in results_list:
+        alg = results['algorithm']
+        rewards = results['episode_rewards']
+        if rewards:
+            episodes_range = range(1, len(rewards) + 1)
+            ax.plot(episodes_range, rewards, label=alg, color=colors.get(alg, 'gray'),
+                   alpha=0.5, linewidth=1, marker='o', markersize=2)
+    ax.set_title('Raw Rewards by Episode')
+    ax.set_xlabel('Episode')
+    ax.set_ylabel('Reward')
+    ax.legend()
+    ax.grid(True, alpha=0.3)
+
+    # 6. Moving Average Rewards (window=5)
+    ax = axes[2, 1]
+    for results in results_list:
+        alg = results['algorithm']
+        rewards = results['episode_rewards']
+        if rewards and len(rewards) >= 5:
+            # Calculate moving average
+            window = 5
+            moving_avg = np.convolve(rewards, np.ones(window)/window, mode='valid')
+            episodes_range = range(window, len(rewards) + 1)
+            ax.plot(episodes_range, moving_avg, label=alg, color=colors.get(alg, 'gray'),
+                   linewidth=2)
+    ax.set_title('Moving Average Rewards (Window=5)')
+    ax.set_xlabel('Episode')
+    ax.set_ylabel('Average Reward')
+    ax.legend()
+    ax.grid(True, alpha=0.3)
 
     plt.tight_layout()
     plt.savefig('results/simple_comparison_faceup/comparison.png', dpi=150, bbox_inches='tight')
