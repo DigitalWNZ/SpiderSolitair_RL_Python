@@ -14,6 +14,7 @@ from datetime import datetime
 
 from spide_solitaire_env_faceup import SpiderSolitaireEnv
 from spider_solitaire_masked_env_faceup import MaskedSpiderSolitaireEnvFaceup
+from replay_episode import EpisodeRecorder
 
 
 class ActionMaskingWrapper(gym.Wrapper):
@@ -267,6 +268,102 @@ class TrainingCallback(BaseCallback):
         }
 
 
+class EpisodeRecordingCallback(BaseCallback):
+    """
+    Callback for recording episodes during PPO training.
+    Records detailed step-by-step episode logs to JSON files.
+    """
+
+    def __init__(self, record_dir='replays', verbose=0):
+        super().__init__(verbose)
+        self.recorder = EpisodeRecorder(record_dir)
+        self.current_episode_num = 0
+        self.episode_started = False
+        self.step_count = 0
+        self.current_state = None
+
+    def _on_rollout_start(self) -> None:
+        """Called at the beginning of each rollout."""
+        # Start recording if not already started
+        if not self.episode_started:
+            self.recorder.start_episode('PPO', self.current_episode_num)
+            self.episode_started = True
+            self.step_count = 0
+
+    def _on_step(self) -> bool:
+        """Called after each environment step."""
+        # Get current state and info
+        obs = self.locals.get('obs_tensor')
+        action = self.locals.get('actions')
+        reward = self.locals.get('rewards', [0])[0]
+        done = self.locals.get('dones', [False])[0]
+        info = self.locals.get('infos', [{}])[0]
+        new_obs = self.locals.get('new_obs')
+
+        # Convert obs to dict format for recording
+        if obs is not None and new_obs is not None:
+            # Extract state dict from vectorized environment observation
+            state_dict = {}
+            new_state_dict = {}
+
+            # Note: This assumes single environment or first env in vectorized setup
+            # For actual recording, we'd need to handle this more carefully
+            if hasattr(self.training_env, 'get_attr'):
+                # Try to get the actual observation from the wrapped environment
+                pass
+
+            # Record the step
+            if self.episode_started and action is not None:
+                # Convert action properly - handle various numpy array shapes
+                try:
+                    if isinstance(action, np.ndarray):
+                        action_flat = action.flatten()
+                        if action_flat.size > 0:
+                            action_int = int(action_flat[0])
+                        else:
+                            action_int = 0
+                    else:
+                        action_int = int(action)
+
+                    self.recorder.record_step(
+                        self.step_count,
+                        state_dict if state_dict else {},
+                        action_int,
+                        float(reward),
+                        new_state_dict if new_state_dict else {},
+                        done,
+                        info
+                    )
+                    self.step_count += 1
+                except Exception:
+                    # Skip recording this step if there's an issue
+                    pass
+
+        # Handle episode completion
+        if done:
+            # Determine game result
+            foundation_count_val = info.get('foundation_count', 0)
+            if isinstance(foundation_count_val, np.ndarray):
+                foundation_count = int(foundation_count_val[0])
+            else:
+                foundation_count = int(foundation_count_val)
+
+            if foundation_count >= 1:
+                game_result = 'WON'
+            elif info.get('current_step', 0) >= info.get('max_step', 500):
+                game_result = 'TRUNCATED'
+            else:
+                game_result = 'LOST'
+
+            # End the current episode recording
+            if self.episode_started:
+                self.recorder.end_episode(game_result)
+                self.episode_started = False
+                self.current_episode_num += 1
+
+        return True
+
+
 def make_env(rank, seed=0, max_steps=500):
     """
     Utility function for multiprocessed env with action masking.
@@ -280,7 +377,7 @@ def make_env(rank, seed=0, max_steps=500):
     return _init
 
 
-def train_spider_solitaire_simple(total_timesteps=1_000_000, n_envs=4, learning_rate=3e-4, max_steps=500):
+def train_spider_solitaire_simple(total_timesteps=1_000_000, n_envs=4, learning_rate=3e-4, max_steps=500, record_episodes=False, record_dir='replays'):
     """
     Train a simplified PPO agent on Spider Solitaire.
 
@@ -289,6 +386,8 @@ def train_spider_solitaire_simple(total_timesteps=1_000_000, n_envs=4, learning_
         n_envs: Number of parallel environments
         learning_rate: Learning rate for PPO
         max_steps: Maximum steps per episode
+        record_episodes: Whether to record episodes to JSON files
+        record_dir: Directory to save episode recordings
 
     Returns:
         model: Trained PPO model
@@ -305,6 +404,8 @@ def train_spider_solitaire_simple(total_timesteps=1_000_000, n_envs=4, learning_
     print("Network architecture: 2 Conv layers (16, 32 channels), 1 FC layer (128 neurons)")
     print("Policy/Value networks: 128→128 (single layer each)")
     print(f"Max steps per episode: {max_steps}")
+    if record_episodes:
+        print(f"Episode recording ENABLED - saving to {record_dir}/")
 
     # Environment setup with action masking
     def env_fn():
@@ -369,6 +470,11 @@ def train_spider_solitaire_simple(total_timesteps=1_000_000, n_envs=4, learning_
     )
 
     callbacks = [training_callback, eval_callback, checkpoint_callback]
+
+    # Add recording callback if enabled
+    if record_episodes:
+        recording_callback = EpisodeRecordingCallback(record_dir=record_dir)
+        callbacks.append(recording_callback)
 
     # Train the model
     print("Starting training...")
@@ -533,13 +639,19 @@ if __name__ == "__main__":
                         help='Maximum steps per episode')
     parser.add_argument('--timesteps', type=int, default=1_000_000,
                         help='Total timesteps for training')
+    parser.add_argument('--record', action='store_true',
+                        help='Enable episode recording')
+    parser.add_argument('--record-dir', type=str, default='replays',
+                        help='Directory to save episode replays')
 
     args = parser.parse_args()
 
     if args.mode == 'train':
         model, env = train_spider_solitaire_simple(
             total_timesteps=args.timesteps,
-            max_steps=args.max_steps
+            max_steps=args.max_steps,
+            record_episodes=args.record,
+            record_dir=args.record_dir
         )
     elif args.mode == 'eval':
         if args.model_path is None:

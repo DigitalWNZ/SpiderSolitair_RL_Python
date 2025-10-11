@@ -13,6 +13,7 @@ from collections import deque
 
 from spide_solitaire_env_faceup import SpiderSolitaireEnv
 from spider_solitaire_masked_env_faceup import ActionMasker
+from replay_episode import EpisodeRecorder
 
 
 class SimpleA2CNetwork(nn.Module):
@@ -117,6 +118,8 @@ class SimpleA2CAgent:
         max_grad_norm: float = 0.5,
         n_steps: int = 5,
         device: str = None,
+        record_episodes: bool = False,
+        record_dir: str = "replays",
     ):
         self.env = env
         self.n_envs = n_envs
@@ -151,8 +154,14 @@ class SimpleA2CAgent:
             'start_time': datetime.now(),
             'steps': 0,
             'rewards': [],
-            'actions': []
+            'actions': [],
+            'state': None,
+            'recording': False
         } for _ in range(n_envs)]
+
+        # Episode recording
+        self.record_episodes = record_episodes
+        self.recorders = [EpisodeRecorder(record_dir) for _ in range(n_envs)] if record_episodes else None
 
     def compute_gae(
         self,
@@ -279,6 +288,22 @@ class SimpleA2CAgent:
                 self.env_episode_info[i]['rewards'].append(reward)
                 self.env_episode_info[i]['actions'].append(int(action))
 
+                # Record step if recording is enabled and episode has started
+                if self.record_episodes and self.env_episode_info[i]['recording']:
+                    self.recorders[i].record_step(
+                        self.env_episode_info[i]['steps'] - 1,
+                        self.env_episode_info[i]['state'],
+                        int(action),
+                        reward,
+                        next_state,
+                        done,
+                        info
+                    )
+
+                # Update state for next recording
+                if self.record_episodes:
+                    self.env_episode_info[i]['state'] = next_state
+
                 # Track metrics when episode completes
                 if done:
                     self.total_episodes += 1
@@ -295,6 +320,15 @@ class SimpleA2CAgent:
                     is_win = foundation_count >= 1  # Win condition: completed 1 sequence (changed from 2)
                     if is_win:
                         self.wins += 1
+                        game_result = 'WON'
+                    elif truncated:
+                        game_result = 'TRUNCATED'
+                    else:
+                        game_result = 'LOST'
+
+                    # End recording if enabled
+                    if self.record_episodes and self.env_episode_info[i]['recording']:
+                        self.recorders[i].end_episode(game_result)
 
                     # Store detailed episode information
                     episode_detail = {
@@ -313,7 +347,9 @@ class SimpleA2CAgent:
                         'start_time': datetime.now(),
                         'steps': 0,
                         'rewards': [],
-                        'actions': []
+                        'actions': [],
+                        'state': None,
+                        'recording': False
                     }
 
                     # Reset the environment after done
@@ -322,6 +358,12 @@ class SimpleA2CAgent:
                     else:  # Single environment
                         next_state, _ = self.env.reset()
                     next_states[i] = next_state
+
+                    # Start recording new episode if enabled
+                    if self.record_episodes:
+                        self.recorders[i].start_episode('A2C', self.total_episodes - 1)
+                        self.env_episode_info[i]['state'] = next_state
+                        self.env_episode_info[i]['recording'] = True
 
             rollout_data['rewards'].append(rewards)
             rollout_data['dones'].append(dones)
@@ -446,6 +488,8 @@ class SimpleA2CAgent:
         """
         print(f"Training Simplified A2C on {self.device}")
         print("Network architecture: 2 Conv layers (16, 32 channels), 1 FC layer (128 neurons)")
+        if self.record_episodes:
+            print(f"Episode recording ENABLED - saving to replays/")
 
         # Initialize environments
         if self.n_envs > 1:
@@ -455,6 +499,13 @@ class SimpleA2CAgent:
             self.env.envs = envs  # Store for rollout collection
         else:
             states = [self.env.reset()[0]]
+
+        # Initialize recording for each environment
+        if self.record_episodes:
+            for i in range(self.n_envs):
+                self.recorders[i].start_episode('A2C', i)
+                self.env_episode_info[i]['state'] = states[i]
+                self.env_episode_info[i]['recording'] = True
 
         num_updates = total_timesteps // (self.n_steps * self.n_envs)
 
@@ -664,6 +715,12 @@ def plot_training_results(rewards: List[float], lengths: List[float], save_path:
 
 
 def main():
+    import argparse
+    parser = argparse.ArgumentParser(description='Train A2C agent for Spider Solitaire')
+    parser.add_argument('--record', action='store_true', help='Enable episode recording')
+    parser.add_argument('--record-dir', type=str, default='replays', help='Directory to save episode replays')
+    args = parser.parse_args()
+
     # Create environment with ActionMasker wrapper
     env = ActionMasker(SpiderSolitaireEnv(max_steps=500))
 
@@ -678,6 +735,8 @@ def main():
         entropy_coef=0.01,
         max_grad_norm=0.5,
         n_steps=5,
+        record_episodes=args.record,
+        record_dir=args.record_dir,
     )
 
     # Record training start time

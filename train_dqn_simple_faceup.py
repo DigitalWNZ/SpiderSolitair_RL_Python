@@ -13,6 +13,7 @@ import matplotlib.pyplot as plt
 
 from spide_solitaire_env_faceup import SpiderSolitaireEnv
 from spider_solitaire_masked_env_faceup import ActionMasker
+from replay_episode import EpisodeRecorder
 
 
 class SimpleDQNNetwork(nn.Module):
@@ -105,6 +106,8 @@ class SimpleDQNAgent:
         batch_size: int = 32,
         target_update_freq: int = 1000,
         device: str = None,
+        record_episodes: bool = False,
+        record_dir: str = "replays",
     ):
         self.env = env
         self.gamma = gamma
@@ -133,6 +136,10 @@ class SimpleDQNAgent:
         self.episode_lengths = []
         self.wins = 0
         self.total_episodes = 0
+
+        # Episode recording
+        self.record_episodes = record_episodes
+        self.recorder = EpisodeRecorder(record_dir) if record_episodes else None
 
     def select_action(self, state: Dict[str, np.ndarray], mask: np.ndarray = None) -> int:
         """
@@ -215,6 +222,8 @@ class SimpleDQNAgent:
         print(f"Training Simplified DQN on {self.device}")
         print("Network architecture: 2 Conv layers (16, 32 channels), 1 FC layer (128 neurons)")
         print(f"Replay buffer size: {self.replay_buffer.buffer.maxlen}")
+        if self.record_episodes:
+            print(f"Episode recording ENABLED - saving to {self.recorder.save_dir}/")
 
         steps = 0
 
@@ -222,6 +231,10 @@ class SimpleDQNAgent:
             state, info = self.env.reset()
             episode_reward = 0
             episode_length = 0
+
+            # Start recording if enabled
+            if self.record_episodes:
+                self.recorder.start_episode('DQN', episode)
 
             while True:
                 # Select action
@@ -231,6 +244,10 @@ class SimpleDQNAgent:
                 # Take action
                 next_state, reward, terminated, truncated, info = self.env.step(action)
                 done = terminated or truncated
+
+                # Record step if enabled
+                if self.record_episodes:
+                    self.recorder.record_step(episode_length, state, action, reward, next_state, done, info)
 
                 # Store transition
                 self.replay_buffer.push(
@@ -266,6 +283,15 @@ class SimpleDQNAgent:
             foundation_count_val = info.get('foundation_count', [0])[0] if isinstance(info.get('foundation_count'), np.ndarray) else info.get('foundation_count', 0)
             if int(foundation_count_val) >= 1:  # Win condition (changed from 2 to 1)
                 self.wins += 1
+                game_result = 'WON'
+            elif truncated:
+                game_result = 'TRUNCATED'
+            else:
+                game_result = 'LOST'
+
+            # End recording if enabled
+            if self.record_episodes:
+                self.recorder.end_episode(game_result)
 
             # Decay epsilon
             self.epsilon = max(self.epsilon_end, self.epsilon * self.epsilon_decay)
@@ -411,6 +437,12 @@ def plot_training_results(rewards: List[float], lengths: List[float], save_path:
 
 
 def main():
+    import argparse
+    parser = argparse.ArgumentParser(description='Train DQN agent for Spider Solitaire')
+    parser.add_argument('--record', action='store_true', help='Enable episode recording')
+    parser.add_argument('--record-dir', type=str, default='replays', help='Directory to save episode replays')
+    args = parser.parse_args()
+
     # Create environment with ActionMasker wrapper
     env = ActionMasker(SpiderSolitaireEnv(max_steps=500))
 
@@ -425,6 +457,8 @@ def main():
         buffer_size=50000,  # Smaller buffer
         batch_size=32,
         target_update_freq=1000,
+        record_episodes=args.record,
+        record_dir=args.record_dir,
     )
 
     # Train

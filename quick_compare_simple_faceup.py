@@ -10,6 +10,7 @@ from spide_solitaire_env_faceup import SpiderSolitaireEnv
 from spider_solitaire_masked_env_faceup import ActionMasker, create_masked_faceup_env
 from train_dqn_simple_faceup import SimpleDQNAgent
 from train_a2c_simple_faceup import SimpleA2CAgent
+from replay_episode import EpisodeRecorder
 
 # Try to import PPO (might not be available)
 try:
@@ -24,12 +25,14 @@ except ImportError:
 
 
 
-def quick_train_simple_dqn(episodes=100, max_steps_per_episode=500):
+def quick_train_simple_dqn(episodes=100, max_steps_per_episode=500, record_episodes=False, record_dir='replays'):
     """Quick simplified DQN training with faceup environment."""
     print("\n" + "="*50)
     print("Training Simple DQN (Simplified Deep Q-Network)")
     print("Environment: Faceup Spider Solitaire")
     print(f"Max steps per episode: {max_steps_per_episode}")
+    if record_episodes:
+        print(f"Episode recording ENABLED - saving to {record_dir}/")
     print("="*50)
 
     start_time = time.time()
@@ -53,7 +56,12 @@ def quick_train_simple_dqn(episodes=100, max_steps_per_episode=500):
     episode_lengths = []
     wins = 0
 
+    # Episode recorder
+    recorder = EpisodeRecorder(record_dir) if record_episodes else None
+
     for episode in range(episodes):
+        if record_episodes:
+            recorder.start_episode('DQN', episode)
         print(f"\n[Simple DQN] Starting Episode {episode + 1}/{episodes}")
         state, info = env.reset()
         episode_reward = 0
@@ -65,6 +73,10 @@ def quick_train_simple_dqn(episodes=100, max_steps_per_episode=500):
 
             next_state, reward, terminated, truncated, info = env.step(action)
             done = terminated or truncated
+
+            # Record step if recording enabled
+            if record_episodes:
+                recorder.record_step(episode_length, state, action, reward, next_state, done, info)
 
             agent.replay_buffer.push(
                 {k: v for k, v in state.items() if k != 'action_mask'},
@@ -109,6 +121,11 @@ def quick_train_simple_dqn(episodes=100, max_steps_per_episode=500):
                 else:
                     print(f"[Simple DQN] Episode {episode + 1} - Lost at step {episode_length}. Reward: {episode_reward:.2f}")
                 print(f"              Game: {game_result}, Valid moves: {valid_moves}, Sequences: {foundation_count}/1")
+
+                # End recording if enabled
+                if record_episodes:
+                    recorder.end_episode(game_result)
+
                 break
 
         episode_rewards.append(episode_reward)
@@ -146,18 +163,20 @@ def quick_train_simple_dqn(episodes=100, max_steps_per_episode=500):
     }
 
 
-def quick_train_simple_a2c(episodes=100, max_steps_per_episode=500):
+def quick_train_simple_a2c(episodes=100, max_steps_per_episode=500, record_episodes=False, record_dir='replays'):
     """Quick simplified A2C training with faceup environment."""
     print("\n" + "="*50)
     print("Training Simple A2C (Simplified Advantage Actor-Critic)")
     print("Environment: Faceup Spider Solitaire")
     print(f"Max steps per episode: {max_steps_per_episode}")
+    if record_episodes:
+        print(f"Episode recording ENABLED - saving to {record_dir}/")
     print("="*50)
 
     start_time = time.time()
     env = create_masked_faceup_env(max_steps=max_steps_per_episode)
 
-    # Create Simple A2C agent with single environment
+    # Create Simple A2C agent with single environment and recording enabled
     agent = SimpleA2CAgent(
         env,
         n_envs=1,
@@ -168,6 +187,8 @@ def quick_train_simple_a2c(episodes=100, max_steps_per_episode=500):
         entropy_coef=0.01,
         max_grad_norm=0.5,
         n_steps=5,
+        record_episodes=record_episodes,
+        record_dir=record_dir,
     )
 
     # Training metrics
@@ -180,6 +201,12 @@ def quick_train_simple_a2c(episodes=100, max_steps_per_episode=500):
 
     # Initialize
     states = [env.reset()[0]]
+
+    # Start recording first episode if enabled
+    if record_episodes:
+        agent.recorders[0].start_episode('A2C', 0)
+        agent.env_episode_info[0]['state'] = states[0]
+        agent.env_episode_info[0]['recording'] = True
 
     while episodes_completed < episodes:
         # Collect rollouts
@@ -248,7 +275,7 @@ def quick_train_simple_a2c(episodes=100, max_steps_per_episode=500):
     }
 
 
-def quick_train_simple_ppo(episodes=100, max_steps_per_episode=500):
+def quick_train_simple_ppo(episodes=100, max_steps_per_episode=500, record_episodes=False, record_dir='replays'):
     """Quick simplified PPO training with faceup environment."""
     if not PPO_AVAILABLE:
         return None
@@ -257,6 +284,8 @@ def quick_train_simple_ppo(episodes=100, max_steps_per_episode=500):
     print("Training Simple PPO (Simplified Proximal Policy Optimization)")
     print("Environment: Faceup Spider Solitaire")
     print(f"Max steps per episode: {max_steps_per_episode}")
+    if record_episodes:
+        print(f"Episode recording ENABLED - saving to {record_dir}/")
     print("="*50)
 
     start_time = time.time()
@@ -275,7 +304,9 @@ def quick_train_simple_ppo(episodes=100, max_steps_per_episode=500):
             total_timesteps=total_timesteps,
             n_envs=n_envs,
             learning_rate=1e-3,
-            max_steps=max_steps_per_episode
+            max_steps=max_steps_per_episode,
+            record_episodes=record_episodes,
+            record_dir=record_dir
         )
 
         # Extract training metrics from callbacks if available
@@ -580,20 +611,27 @@ def generate_simple_report(results_list):
     print('\n'.join(report))
 
 
-def main(episodes=100, max_steps_per_episode=500):
+def main(episodes=100, max_steps_per_episode=500, record_episodes=False, record_dir='replays'):
     """Run comparison with faceup environments."""
     print("Spider Solitaire Simplified RL Algorithm Comparison (Faceup)")
     print(f"Training each simplified algorithm for {episodes} episodes...")
     print(f"Max steps per episode: {max_steps_per_episode}")
     print("Network: 2 Conv layers (16→32), 1 FC layer (128 neurons)")
     print("Environment: Faceup Spider Solitaire")
+    if record_episodes:
+        print(f"Episode recording ENABLED - saving to {record_dir}/")
     print("="*50)
 
     results = []
 
     # Train Simple DQN
     try:
-        dqn_results = quick_train_simple_dqn(episodes=episodes, max_steps_per_episode=max_steps_per_episode)
+        dqn_results = quick_train_simple_dqn(
+            episodes=episodes,
+            max_steps_per_episode=max_steps_per_episode,
+            record_episodes=record_episodes,
+            record_dir=record_dir
+        )
         results.append(dqn_results)
     except Exception as e:
         print(f"Simple DQN training failed: {e}")
@@ -602,7 +640,12 @@ def main(episodes=100, max_steps_per_episode=500):
 
     # Train Simple A2C
     try:
-        a2c_results = quick_train_simple_a2c(episodes=episodes, max_steps_per_episode=max_steps_per_episode)
+        a2c_results = quick_train_simple_a2c(
+            episodes=episodes,
+            max_steps_per_episode=max_steps_per_episode,
+            record_episodes=record_episodes,
+            record_dir=record_dir
+        )
         results.append(a2c_results)
     except Exception as e:
         print(f"Simple A2C training failed: {e}")
@@ -612,7 +655,12 @@ def main(episodes=100, max_steps_per_episode=500):
     # Train Simple PPO (if available)
     if PPO_AVAILABLE:
         try:
-            ppo_results = quick_train_simple_ppo(episodes=episodes, max_steps_per_episode=max_steps_per_episode)
+            ppo_results = quick_train_simple_ppo(
+                episodes=episodes,
+                max_steps_per_episode=max_steps_per_episode,
+                record_episodes=record_episodes,
+                record_dir=record_dir
+            )
             if ppo_results:
                 results.append(ppo_results)
         except Exception as e:
@@ -640,6 +688,15 @@ if __name__ == "__main__":
                         help='Number of episodes to train each algorithm (default: 2)')
     parser.add_argument('--max-steps', type=int, default=500,
                         help='Maximum steps per episode (default: 500)')
+    parser.add_argument('--record', action='store_true',
+                        help='Enable episode recording')
+    parser.add_argument('--record-dir', type=str, default='replays',
+                        help='Directory to save episode replays (default: replays)')
 
     args = parser.parse_args()
-    main(episodes=args.episodes, max_steps_per_episode=args.max_steps)
+    main(
+        episodes=args.episodes,
+        max_steps_per_episode=args.max_steps,
+        record_episodes=args.record,
+        record_dir=args.record_dir
+    )
