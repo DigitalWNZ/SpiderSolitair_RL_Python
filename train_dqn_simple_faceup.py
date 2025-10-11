@@ -262,7 +262,9 @@ class SimpleDQNAgent:
             self.episode_lengths.append(episode_length)
             self.total_episodes += 1
 
-            if episode_reward > 0:  # Win condition
+            # Check foundation_count to determine win (2 sequences)
+            foundation_count_val = info.get('foundation_count', [0])[0] if isinstance(info.get('foundation_count'), np.ndarray) else info.get('foundation_count', 0)
+            if int(foundation_count_val) >= 2:  # Win condition (changed from 4 to 2)
                 self.wins += 1
 
             # Decay epsilon
@@ -284,8 +286,8 @@ class SimpleDQNAgent:
                 # Print detailed info from last episode
                 if 'valid_moves' in info:
                     print(f"  Last episode - Valid moves: {info.get('valid_moves', 0)}, "
-                          f"Sequences: {info.get('foundation_count', [0])[0] if isinstance(info.get('foundation_count'), np.ndarray) else info.get('foundation_count', 0)}/8, "
-                          f"Steps: {info.get('current_step', 0)}/{info.get('max_step', 500)}")
+                          f"Sequences: {info.get('foundation_count', [0])[0] if isinstance(info.get('foundation_count'), np.ndarray) else info.get('foundation_count', 0)}/2, "
+                          f"Steps: {info.get('current_step', 0)}/{info.get('max_step', 1000)}")
 
             # Save model
             if episode % save_freq == 0 and episode > 0:
@@ -364,7 +366,9 @@ class SimpleDQNAgent:
                     eval_env.render()
 
             rewards.append(episode_reward)
-            if episode_reward > 0:
+            # Check foundation_count to determine win (2 sequences)
+            foundation_count_val = info.get('foundation_count', [0])[0] if isinstance(info.get('foundation_count'), np.ndarray) else info.get('foundation_count', 0)
+            if int(foundation_count_val) >= 2:  # Win condition (changed from 4 to 2)
                 wins += 1
 
             print(f"Episode {episode + 1}: Reward = {episode_reward:.2f}")

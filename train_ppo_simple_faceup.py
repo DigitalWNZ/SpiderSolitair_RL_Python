@@ -113,8 +113,8 @@ class TrainingCallback(BaseCallback):
             steps = info.get('current_step', 0)
             max_step = info.get('max_step', 500)
 
-            # Determine game result based on foundation count and truncation
-            if foundation_count >= 8:
+            # Determine game result based on foundation count and truncation (2 sequences)
+            if foundation_count >= 2:  # Win condition (changed from 4 to 2)
                 game_result = 'WON'
                 self.wins += 1
             elif steps >= max_step:
@@ -396,8 +396,8 @@ def evaluate_model(model_path, n_episodes=10, render=True, max_steps=500):
         final_score = info.get('score', 0)
         steps = info.get('current_step', 0)
 
-        # Determine game result
-        if foundation_count >= 8:
+        # Determine game result (2 sequences)
+        if foundation_count >= 2:  # Win condition (changed from 4 to 2)
             game_result = 'WON'
         elif steps >= max_steps:
             game_result = 'TRUNCATED'

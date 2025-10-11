@@ -1,80 +1,110 @@
 [
   {
     "algorithm": "Simple DQN",
-    "episodes": 5,
-    "training_time": 21.85495400428772,
+    "episodes": 10,
+    "training_time": 68.5910279750824,
     "episode_rewards": [
-      -20,
-      50,
-      30,
-      -25,
-      -15
+      1327.5,
+      1726.0,
+      1560.5,
+      1405.5,
+      1794.0,
+      894.5,
+      1792.0,
+      978.5,
+      2239.5,
+      1651.5
     ],
     "episode_lengths": [
-      500,
-      500,
-      500,
-      500,
-      500
+      1000,
+      1000,
+      1000,
+      1000,
+      219,
+      1000,
+      182,
+      1000,
+      387,
+      1000
     ],
-    "wins": 2,
-    "win_rate": 0.4,
-    "avg_reward": 4.0,
-    "final_20_avg": 4.0,
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_reward": 1536.95,
+    "final_20_avg": 1536.95,
     "last_episode_info": {
       "game_result": "TRUNCATED",
-      "valid_moves": 6,
+      "valid_moves": 12,
       "foundation_count": 0
     }
   },
   {
     "algorithm": "Simple A2C",
-    "episodes": 5,
-    "training_time": 6.266036033630371,
+    "episodes": 10,
+    "training_time": 25.037062883377075,
     "episode_rewards": [
-      0,
-      -5,
-      -5,
-      15,
-      85
+      3199.0,
+      485.5,
+      917.5,
+      1198.5,
+      459.0,
+      917.0,
+      1755.5,
+      198.5,
+      3066.5,
+      1622.5
     ],
     "episode_lengths": [
-      500,
-      500,
-      500,
-      500,
-      500
-    ],
-    "wins": 2,
-    "win_rate": 0.4,
-    "avg_reward": 18.0,
-    "final_20_avg": 18.0
-  },
-  {
-    "algorithm": "Simple PPO",
-    "episodes": 5,
-    "training_time": 7.71028208732605,
-    "episode_rewards": [
-      -5050,
-      -5050,
-      -5050,
-      -5050,
-      -5050
-    ],
-    "episode_lengths": [
-      500,
-      500,
-      500,
-      500,
-      500
+      1000,
+      1000,
+      1000,
+      1000,
+      1000,
+      1000,
+      1000,
+      1000,
+      1000,
+      1000
     ],
     "wins": 0,
     "win_rate": 0.0,
-    "avg_reward": -5050.0,
-    "final_20_avg": -5050.0,
+    "avg_reward": 1381.95,
+    "final_20_avg": 1381.95
+  },
+  {
+    "algorithm": "Simple PPO",
+    "episodes": 10,
+    "training_time": 21.602078199386597,
+    "episode_rewards": [
+      -10050,
+      -10050,
+      -10050,
+      -10050,
+      -10050,
+      -10050,
+      -10050,
+      -10050,
+      -10050,
+      -10050
+    ],
+    "episode_lengths": [
+      1000,
+      1000,
+      1000,
+      1000,
+      1000,
+      1000,
+      1000,
+      1000,
+      1000,
+      1000
+    ],
+    "wins": 0,
+    "win_rate": 0.0,
+    "avg_reward": -10050.0,
+    "final_20_avg": -10050.0,
     "last_episode_info": {
       "game_result": "TRUNCATED",
-      "valid_moves": 9,
+      "valid_moves": 13,
       "foundation_count": 0
     }
   }

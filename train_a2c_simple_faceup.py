@@ -288,7 +288,11 @@ class SimpleA2CAgent:
                     self.episode_rewards.append(episode_reward)
                     self.episode_lengths.append(episode_length)
 
-                    is_win = episode_reward > 0  # Win condition
+                    # Extract foundation_count to determine win
+                    foundation_count_val = next_state.get('foundation_count', [0])[0] if isinstance(next_state.get('foundation_count'), np.ndarray) else next_state.get('foundation_count', 0)
+                    foundation_count = int(foundation_count_val)
+
+                    is_win = foundation_count >= 2  # Win condition: completed 2 sequences (changed from 4)
                     if is_win:
                         self.wins += 1
 
@@ -299,7 +303,7 @@ class SimpleA2CAgent:
                         'win': is_win,
                         'duration': (datetime.now() - self.env_episode_info[i]['start_time']).total_seconds(),
                         'final_moves': self.env_episode_info[i]['actions'][-20:],  # Last 20 moves
-                        'foundation_count': int(next_state.get('foundation_count', [0])[0] if isinstance(next_state.get('foundation_count'), np.ndarray) else next_state.get('foundation_count', 0)),
+                        'foundation_count': foundation_count,
                         'stock_count': int(next_state.get('stock_count', [-1])[0] if isinstance(next_state.get('stock_count'), np.ndarray) else next_state.get('stock_count', -1))
                     }
                     self.episode_details.append(episode_detail)
@@ -524,10 +528,12 @@ class SimpleA2CAgent:
             # Recent performance (last 100 episodes)
             if len(all_rewards) >= 100:
                 recent_rewards = all_rewards[-100:]
-                recent_wins = sum(1 for r in recent_rewards if r > 0)
+                # Count wins from episode_details (which uses foundation_count >= 8)
+                recent_episode_details = list(self.episode_details)[-100:]
+                recent_wins = sum(1 for ep in recent_episode_details if ep['win'])
                 print(f"\nLast 100 Episodes:")
                 print(f"  Average reward: {np.mean(recent_rewards):.2f}")
-                print(f"  Win rate: {recent_wins/100:.2%}")
+                print(f"  Win rate: {recent_wins/len(recent_episode_details):.2%}" if recent_episode_details else "  Win rate: N/A")
 
         # Display last 10 episodes in detail
         print(f"\n{'='*80}")
@@ -611,7 +617,9 @@ class SimpleA2CAgent:
                     eval_env.render()
 
             rewards.append(episode_reward)
-            if episode_reward > 0:
+            # Check foundation_count to determine win (2 sequences)
+            foundation_count_val = info.get('foundation_count', [0])[0] if isinstance(info.get('foundation_count'), np.ndarray) else info.get('foundation_count', 0)
+            if int(foundation_count_val) >= 2:  # Win condition (changed from 4 to 2)
                 wins += 1
 
             print(f"Episode {episode + 1}: Reward = {episode_reward:.2f}")

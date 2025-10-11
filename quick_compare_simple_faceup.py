@@ -94,8 +94,8 @@ def quick_train_simple_dqn(episodes=100, max_steps_per_episode=500):
 
                 current_step = info.get('current_step', episode_length)
 
-                # Determine game result
-                if foundation_count >= 8:
+                # Determine game result (2 sequences)
+                if foundation_count >= 2:  # Win condition (changed from 4 to 2)
                     game_result = 'WON'
                 elif current_step >= max_steps_per_episode:
                     game_result = 'TRUNCATED'
@@ -106,13 +106,13 @@ def quick_train_simple_dqn(episodes=100, max_steps_per_episode=500):
                     print(f"[Simple DQN] Episode {episode + 1} - WON! Reward: {episode_reward:.2f}")
                 elif truncated:
                     print(f"[Simple DQN] Episode {episode + 1} - Truncated at step {episode_length}. Reward: {episode_reward:.2f}")
-                print(f"              Game: {game_result}, Valid moves: {valid_moves}, Sequences: {foundation_count}/8")
+                print(f"              Game: {game_result}, Valid moves: {valid_moves}, Sequences: {foundation_count}/2")
                 break
 
         episode_rewards.append(episode_reward)
         episode_lengths.append(episode_length)
 
-        if episode_reward > 0:
+        if foundation_count >= 2:  # Win condition (changed from 4 to 2)
             wins += 1
 
         # Update epsilon
@@ -192,21 +192,31 @@ def quick_train_simple_a2c(episodes=100, max_steps_per_episode=500):
                 if done:
                     episodes_completed += 1
 
-                    # Determine game result
-                    game_result = 'TRUNCATED' if current_episode_length >= max_steps_per_episode else 'COMPLETED'
-                    if current_episode_reward > 0:
+                    # Get foundation_count from current state to determine win
+                    current_state = states[j]
+                    foundation_count_val = current_state.get('foundation_count', [0])[0] if isinstance(current_state.get('foundation_count'), np.ndarray) else current_state.get('foundation_count', 0)
+                    foundation_count = int(foundation_count_val)
+
+                    # Determine game result based on foundation_count (2 sequences)
+                    if foundation_count >= 2:  # Win condition (changed from 4 to 2)
                         game_result = 'WON'
+                        is_win = True
+                    elif current_episode_length >= max_steps_per_episode:
+                        game_result = 'TRUNCATED'
+                        is_win = False
+                    else:
+                        game_result = 'LOST'
+                        is_win = False
 
                     print(f"\n[Simple A2C] Completed Episode {episodes_completed}/{episodes}, "
                           f"Reward: {current_episode_reward:.2f}, Length: {current_episode_length}")
-                    print(f"              Game: {game_result}")
+                    print(f"              Game: {game_result}, Sequences: {foundation_count}/2")
 
                     episode_rewards.append(current_episode_reward)
                     episode_lengths.append(current_episode_length)
 
-                    if current_episode_reward > 0:
+                    if is_win:
                         wins += 1
-                        print(f"[Simple A2C] Episode {episodes_completed} - WON!")
 
                     current_episode_reward = 0
                     current_episode_length = 0
@@ -304,8 +314,8 @@ def quick_train_simple_ppo(episodes=100, max_steps_per_episode=500):
 
                     current_step = info.get('current_step', episode_length)
 
-                    # Determine game result
-                    if foundation_count >= 8:
+                    # Determine game result (2 sequences)
+                    if foundation_count >= 2:  # Win condition (changed from 4 to 2)
                         game_result = 'WON'
                     elif current_step >= max_steps_per_episode:
                         game_result = 'TRUNCATED'
@@ -314,7 +324,8 @@ def quick_train_simple_ppo(episodes=100, max_steps_per_episode=500):
 
             episode_rewards.append(episode_reward)
             episode_lengths.append(episode_length)
-            if episode_reward > 0:
+            # Check if actually won (foundation_count >= 2)
+            if foundation_count >= 2:  # Win condition (changed from 4 to 2)
                 wins += 1
 
         eval_env.close()
@@ -517,7 +528,7 @@ def generate_simple_report(results_list):
                 info = r['last_episode_info']
                 report.append(f"| {r['algorithm']} | {info['game_result']} | "
                              f"{info['valid_moves']} | "
-                             f"{info['foundation_count']}/8 |")
+                             f"{info['foundation_count']}/2 |")
 
     # Save results
     with open('results/simple_comparison_faceup/report.md', 'w') as f:

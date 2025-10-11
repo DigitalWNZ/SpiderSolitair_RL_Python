@@ -1,0 +1,1127 @@
+Spider Solitaire Simplified RL Algorithm Comparison (Faceup)
+Training each simplified algorithm for 50 episodes...
+Max steps per episode: 1000
+Network: 2 Conv layers (16→32), 1 FC layer (128 neurons)
+Environment: Faceup Spider Solitaire
+==================================================
+
+==================================================
+Training Simple DQN (Simplified Deep Q-Network)
+Environment: Faceup Spider Solitaire
+Max steps per episode: 1000
+==================================================
+
+[Simple DQN] Starting Episode 1/50
+[Simple DQN] Episode 1 - Truncated at step 1000. Reward: 1019.50
+              Game: TRUNCATED, Valid moves: 7, Sequences: 0/8
+
+[Simple DQN] Starting Episode 2/50
+[Simple DQN] Episode 2 - Truncated at step 1000. Reward: 715.00
+              Game: TRUNCATED, Valid moves: 4, Sequences: 0/8
+
+[Simple DQN] Starting Episode 3/50
+[Simple DQN] Episode 3 - Truncated at step 1000. Reward: 1526.50
+              Game: TRUNCATED, Valid moves: 4, Sequences: 0/8
+
+[Simple DQN] Starting Episode 4/50
+[Simple DQN] Episode 4 - Truncated at step 1000. Reward: 1881.00
+              Game: TRUNCATED, Valid moves: 8, Sequences: 0/8
+
+[Simple DQN] Starting Episode 5/50
+[Simple DQN] Episode 5 - Truncated at step 1000. Reward: 2528.00
+              Game: TRUNCATED, Valid moves: 4, Sequences: 0/8
+
+[Simple DQN] Starting Episode 6/50
+[Simple DQN] Episode 6 - Truncated at step 1000. Reward: 1828.00
+              Game: TRUNCATED, Valid moves: 7, Sequences: 0/8
+
+[Simple DQN] Starting Episode 7/50
+[Simple DQN] Episode 7 - Truncated at step 1000. Reward: 1402.50
+              Game: TRUNCATED, Valid moves: 9, Sequences: 0/8
+
+[Simple DQN] Starting Episode 8/50
+[Simple DQN] Episode 8 - Truncated at step 1000. Reward: 1160.00
+              Game: TRUNCATED, Valid moves: 15, Sequences: 0/8
+
+[Simple DQN] Starting Episode 9/50
+[Simple DQN] Episode 9 - Truncated at step 1000. Reward: 1252.00
+              Game: TRUNCATED, Valid moves: 5, Sequences: 0/8
+
+[Simple DQN] Starting Episode 10/50
+[Simple DQN] Episode 10 - Truncated at step 1000. Reward: 501.00
+              Game: TRUNCATED, Valid moves: 2, Sequences: 0/8
+
+[Simple DQN] Starting Episode 11/50
+[Simple DQN] Episode 11 - Truncated at step 1000. Reward: 2781.50
+              Game: TRUNCATED, Valid moves: 20, Sequences: 0/8
+
+[Simple DQN] Starting Episode 12/50
+[Simple DQN] Episode 12 - Truncated at step 64. Reward: -9.50
+              Game: LOST, Valid moves: 0, Sequences: 0/8
+
+[Simple DQN] Starting Episode 13/50
+[Simple DQN] Episode 13 - Truncated at step 1000. Reward: 1750.50
+              Game: TRUNCATED, Valid moves: 9, Sequences: 0/8
+
+[Simple DQN] Starting Episode 14/50
+[Simple DQN] Episode 14 - Truncated at step 1000. Reward: 1511.50
+              Game: TRUNCATED, Valid moves: 6, Sequences: 0/8
+
+[Simple DQN] Starting Episode 15/50
+[Simple DQN] Episode 15 - Truncated at step 1000. Reward: 499.50
+              Game: TRUNCATED, Valid moves: 2, Sequences: 0/8
+
+[Simple DQN] Starting Episode 16/50
+[Simple DQN] Episode 16 - Truncated at step 1000. Reward: 1778.50
+              Game: TRUNCATED, Valid moves: 11, Sequences: 0/8
+
+[Simple DQN] Starting Episode 17/50
+[Simple DQN] Episode 17 - Truncated at step 1000. Reward: 2286.50
+              Game: TRUNCATED, Valid moves: 6, Sequences: 0/8
+
+[Simple DQN] Starting Episode 18/50
+[Simple DQN] Episode 18 - Truncated at step 1000. Reward: 2310.00
+              Game: TRUNCATED, Valid moves: 9, Sequences: 0/8
+
+[Simple DQN] Starting Episode 19/50
+[Simple DQN] Episode 19 - Truncated at step 1000. Reward: 2468.50
+              Game: TRUNCATED, Valid moves: 10, Sequences: 0/8
+
+[Simple DQN] Starting Episode 20/50
+[Simple DQN] Episode 20 - Truncated at step 1000. Reward: 561.00
+              Game: TRUNCATED, Valid moves: 6, Sequences: 0/8
+[Simple DQN] Progress: Episode 20/50, Avg Reward: 1487.58, Win Rate: 0.00%, Epsilon: 0.818
+
+[Simple DQN] Starting Episode 21/50
+[Simple DQN] Episode 21 - Truncated at step 1000. Reward: 2109.00
+              Game: TRUNCATED, Valid moves: 18, Sequences: 0/8
+
+[Simple DQN] Starting Episode 22/50
+[Simple DQN] Episode 22 - Truncated at step 1000. Reward: 1282.50
+              Game: TRUNCATED, Valid moves: 6, Sequences: 0/8
+
+[Simple DQN] Starting Episode 23/50
+[Simple DQN] Episode 23 - Truncated at step 1000. Reward: 1509.00
+              Game: TRUNCATED, Valid moves: 11, Sequences: 0/8
+
+[Simple DQN] Starting Episode 24/50
+[Simple DQN] Episode 24 - Truncated at step 1000. Reward: 1599.50
+              Game: TRUNCATED, Valid moves: 9, Sequences: 0/8
+
+[Simple DQN] Starting Episode 25/50
+[Simple DQN] Episode 25 - Truncated at step 1000. Reward: 2980.50
+              Game: TRUNCATED, Valid moves: 20, Sequences: 0/8
+
+[Simple DQN] Starting Episode 26/50
+[Simple DQN] Episode 26 - Truncated at step 1000. Reward: 1064.00
+              Game: TRUNCATED, Valid moves: 4, Sequences: 0/8
+
+[Simple DQN] Starting Episode 27/50
+[Simple DQN] Episode 27 - Truncated at step 1000. Reward: 1863.50
+              Game: TRUNCATED, Valid moves: 10, Sequences: 0/8
+
+[Simple DQN] Starting Episode 28/50
+[Simple DQN] Episode 28 - Truncated at step 1000. Reward: 1091.50
+              Game: TRUNCATED, Valid moves: 2, Sequences: 0/8
+
+[Simple DQN] Starting Episode 29/50
+[Simple DQN] Episode 29 - Truncated at step 1000. Reward: 1800.50
+              Game: TRUNCATED, Valid moves: 11, Sequences: 0/8
+
+[Simple DQN] Starting Episode 30/50
+[Simple DQN] Episode 30 - Truncated at step 1000. Reward: 1200.00
+              Game: TRUNCATED, Valid moves: 8, Sequences: 0/8
+
+[Simple DQN] Starting Episode 31/50
+[Simple DQN] Episode 31 - Truncated at step 1000. Reward: 1621.00
+              Game: TRUNCATED, Valid moves: 4, Sequences: 0/8
+
+[Simple DQN] Starting Episode 32/50
+[Simple DQN] Episode 32 - Truncated at step 1000. Reward: 1773.00
+              Game: TRUNCATED, Valid moves: 4, Sequences: 0/8
+
+[Simple DQN] Starting Episode 33/50
+[Simple DQN] Episode 33 - Truncated at step 1000. Reward: 784.50
+              Game: TRUNCATED, Valid moves: 6, Sequences: 0/8
+
+[Simple DQN] Starting Episode 34/50
+[Simple DQN] Episode 34 - Truncated at step 1000. Reward: 1072.50
+              Game: TRUNCATED, Valid moves: 5, Sequences: 0/8
+
+[Simple DQN] Starting Episode 35/50
+[Simple DQN] Episode 35 - Truncated at step 1000. Reward: 2381.00
+              Game: TRUNCATED, Valid moves: 9, Sequences: 0/8
+
+[Simple DQN] Starting Episode 36/50
+[Simple DQN] Episode 36 - Truncated at step 1000. Reward: 2811.00
+              Game: TRUNCATED, Valid moves: 17, Sequences: 0/8
+
+[Simple DQN] Starting Episode 37/50
+[Simple DQN] Episode 37 - Truncated at step 1000. Reward: 711.50
+              Game: TRUNCATED, Valid moves: 3, Sequences: 0/8
+
+[Simple DQN] Starting Episode 38/50
+[Simple DQN] Episode 38 - Truncated at step 1000. Reward: 2583.50
+              Game: TRUNCATED, Valid moves: 5, Sequences: 0/8
+
+[Simple DQN] Starting Episode 39/50
+[Simple DQN] Episode 39 - Truncated at step 1000. Reward: 2536.00
+              Game: TRUNCATED, Valid moves: 15, Sequences: 0/8
+
+[Simple DQN] Starting Episode 40/50
+[Simple DQN] Episode 40 - Truncated at step 1000. Reward: 1633.50
+              Game: TRUNCATED, Valid moves: 9, Sequences: 0/8
+[Simple DQN] Progress: Episode 40/50, Avg Reward: 1720.38, Win Rate: 0.00%, Epsilon: 0.669
+
+[Simple DQN] Starting Episode 41/50
+[Simple DQN] Episode 41 - Truncated at step 1000. Reward: 1811.50
+              Game: TRUNCATED, Valid moves: 10, Sequences: 0/8
+
+[Simple DQN] Starting Episode 42/50
+[Simple DQN] Episode 42 - Truncated at step 1000. Reward: 2337.50
+              Game: TRUNCATED, Valid moves: 13, Sequences: 0/8
+
+[Simple DQN] Starting Episode 43/50
+[Simple DQN] Episode 43 - Truncated at step 1000. Reward: 2941.00
+              Game: TRUNCATED, Valid moves: 18, Sequences: 0/8
+
+[Simple DQN] Starting Episode 44/50
+[Simple DQN] Episode 44 - Truncated at step 1000. Reward: 2476.00
+              Game: TRUNCATED, Valid moves: 8, Sequences: 0/8
+
+[Simple DQN] Starting Episode 45/50
+[Simple DQN] Episode 45 - Truncated at step 1000. Reward: 1583.00
+              Game: TRUNCATED, Valid moves: 6, Sequences: 0/8
+
+[Simple DQN] Starting Episode 46/50
+[Simple DQN] Episode 46 - Truncated at step 1000. Reward: 937.50
+              Game: TRUNCATED, Valid moves: 4, Sequences: 0/8
+
+[Simple DQN] Starting Episode 47/50
+[Simple DQN] Episode 47 - Truncated at step 1000. Reward: 734.00
+              Game: TRUNCATED, Valid moves: 4, Sequences: 0/8
+
+[Simple DQN] Starting Episode 48/50
+[Simple DQN] Episode 48 - Truncated at step 1000. Reward: 1916.00
+              Game: TRUNCATED, Valid moves: 4, Sequences: 0/8
+
+[Simple DQN] Starting Episode 49/50
+[Simple DQN] Episode 49 - Truncated at step 1000. Reward: 2185.00
+              Game: TRUNCATED, Valid moves: 4, Sequences: 0/8
+
+[Simple DQN] Starting Episode 50/50
+[Simple DQN] Episode 50 - Truncated at step 1000. Reward: 976.50
+              Game: TRUNCATED, Valid moves: 7, Sequences: 0/8
+
+==================================================
+Training Simple A2C (Simplified Advantage Actor-Critic)
+Environment: Faceup Spider Solitaire
+Max steps per episode: 1000
+==================================================
+
+[Simple A2C] Completed Episode 1/50, Reward: 984.00, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+[Simple A2C] Completed Episode 2/50, Reward: 2462.50, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+[Simple A2C] Completed Episode 3/50, Reward: 1468.50, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+[Simple A2C] Completed Episode 4/50, Reward: 2372.50, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+[Simple A2C] Completed Episode 5/50, Reward: 798.00, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+[Simple A2C] Completed Episode 6/50, Reward: 926.00, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+[Simple A2C] Completed Episode 7/50, Reward: 1925.00, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+[Simple A2C] Completed Episode 8/50, Reward: 721.50, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+[Simple A2C] Completed Episode 9/50, Reward: 444.00, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+[Simple A2C] Completed Episode 10/50, Reward: 2641.00, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+[Simple A2C] Completed Episode 11/50, Reward: 1028.50, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+[Simple A2C] Completed Episode 12/50, Reward: 1309.00, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+[Simple A2C] Completed Episode 13/50, Reward: 1923.00, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+[Simple A2C] Completed Episode 14/50, Reward: 1442.50, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+[Simple A2C] Completed Episode 15/50, Reward: 775.00, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+[Simple A2C] Completed Episode 16/50, Reward: 2067.50, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+[Simple A2C] Completed Episode 17/50, Reward: 1059.00, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+[Simple A2C] Completed Episode 18/50, Reward: 1306.00, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+[Simple A2C] Completed Episode 19/50, Reward: 936.50, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+[Simple A2C] Completed Episode 20/50, Reward: -50.00, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 20/50, Avg Reward: 1327.00, Win Rate: 0.00%
+
+[Simple A2C] Completed Episode 21/50, Reward: 1711.00, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+[Simple A2C] Completed Episode 22/50, Reward: 793.50, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+[Simple A2C] Completed Episode 23/50, Reward: 223.00, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+[Simple A2C] Completed Episode 24/50, Reward: 1386.00, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+[Simple A2C] Completed Episode 25/50, Reward: 799.00, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+[Simple A2C] Completed Episode 26/50, Reward: 389.00, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+[Simple A2C] Completed Episode 27/50, Reward: 786.50, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+[Simple A2C] Completed Episode 28/50, Reward: 792.00, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+[Simple A2C] Completed Episode 29/50, Reward: 2099.00, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+[Simple A2C] Completed Episode 30/50, Reward: 1658.50, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+[Simple A2C] Completed Episode 31/50, Reward: 696.50, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+[Simple A2C] Completed Episode 32/50, Reward: 1434.50, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+[Simple A2C] Completed Episode 33/50, Reward: 1572.00, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+[Simple A2C] Completed Episode 34/50, Reward: 2871.00, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+[Simple A2C] Completed Episode 35/50, Reward: 445.50, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+[Simple A2C] Completed Episode 36/50, Reward: 1153.50, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+[Simple A2C] Completed Episode 37/50, Reward: 890.00, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+[Simple A2C] Completed Episode 38/50, Reward: 1225.00, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+[Simple A2C] Completed Episode 39/50, Reward: 1434.00, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+[Simple A2C] Completed Episode 40/50, Reward: 1442.00, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+[Simple A2C] Progress: Episodes 40/50, Avg Reward: 1190.08, Win Rate: 0.00%
+
+[Simple A2C] Completed Episode 41/50, Reward: 955.00, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+[Simple A2C] Completed Episode 42/50, Reward: 1189.00, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+[Simple A2C] Completed Episode 43/50, Reward: 795.00, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+[Simple A2C] Completed Episode 44/50, Reward: 1779.50, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+[Simple A2C] Completed Episode 45/50, Reward: 1162.00, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+[Simple A2C] Completed Episode 46/50, Reward: 1466.00, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+[Simple A2C] Completed Episode 47/50, Reward: 2416.00, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+[Simple A2C] Completed Episode 48/50, Reward: 725.50, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+[Simple A2C] Completed Episode 49/50, Reward: 1464.00, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+[Simple A2C] Completed Episode 50/50, Reward: 865.00, Length: 1000
+              Game: TRUNCATED, Sequences: 0/8
+
+==================================================
+Training Simple PPO (Simplified Proximal Policy Optimization)
+Environment: Faceup Spider Solitaire
+Max steps per episode: 1000
+==================================================
+Training Simplified PPO on Faceup Environment
+Network architecture: 2 Conv layers (16, 32 channels), 1 FC layer (128 neurons)
+Policy/Value networks: 128→128 (single layer each)
+Max steps per episode: 1000
+/Users/wangez/.pyenv/versions/3.12.6/lib/python3.12/site-packages/stable_baselines3/common/policies.py:486: UserWarning: As shared layers in the mlp_extractor are removed since SB3 v1.8.0, you should now pass directly a dictionary and not a list (net_arch=dict(pi=..., vf=...) instead of net_arch=[dict(pi=..., vf=...)])
+  warnings.warn(
+Using cpu device
+Starting training...
+Logging to ./logs/simple_spider_solitaire_faceup_20251010_185630/PPO_1
+/Users/wangez/.pyenv/versions/3.12.6/lib/python3.12/site-packages/stable_baselines3/common/callbacks.py:418: UserWarning: Training and eval env are not of the same type<stable_baselines3.common.vec_env.subproc_vec_env.SubprocVecEnv object at 0x134ba5a30> != <stable_baselines3.common.vec_env.dummy_vec_env.DummyVecEnv object at 0x1433b98b0>
+  warnings.warn("Training and eval env are not of the same type" f"{self.training_env} != {self.eval_env}")
+----------------------------------
+| rollout/           |           |
+|    ep_len_mean     | 1e+03     |
+|    ep_rew_mean     | -9.97e+03 |
+| time/              |           |
+|    fps             | 1282      |
+|    iterations      | 1         |
+|    time_elapsed    | 1         |
+|    total_timesteps | 2048      |
+----------------------------------
+---------------------------------------
+| rollout/                |           |
+|    ep_len_mean          | 1e+03     |
+|    ep_rew_mean          | -9.98e+03 |
+| time/                   |           |
+|    fps                  | 531       |
+|    iterations           | 2         |
+|    time_elapsed         | 7         |
+|    total_timesteps      | 4096      |
+| train/                  |           |
+|    approx_kl            | 73.968185 |
+|    clip_fraction        | 0.995     |
+|    clip_range           | 0.2       |
+|    entropy_loss         | -0.441    |
+|    explained_variance   | 0.0257    |
+|    learning_rate        | 0.001     |
+|    loss                 | 5.8       |
+|    n_updates            | 10        |
+|    policy_gradient_loss | 0.213     |
+|    value_loss           | 398       |
+---------------------------------------
+----------------------------------------
+| rollout/                |            |
+|    ep_len_mean          | 1e+03      |
+|    ep_rew_mean          | -9.99e+03  |
+| time/                   |            |
+|    fps                  | 445        |
+|    iterations           | 3          |
+|    time_elapsed         | 13         |
+|    total_timesteps      | 6144       |
+| train/                  |            |
+|    approx_kl            | 0.04996149 |
+|    clip_fraction        | 0.00684    |
+|    clip_range           | 0.2        |
+|    entropy_loss         | -0.000564  |
+|    explained_variance   | -0.419     |
+|    learning_rate        | 0.001      |
+|    loss                 | 198        |
+|    n_updates            | 20         |
+|    policy_gradient_loss | 0.00126    |
+|    value_loss           | 654        |
+----------------------------------------
+---------------------------------------
+| rollout/                |           |
+|    ep_len_mean          | 1e+03     |
+|    ep_rew_mean          | -9.99e+03 |
+| time/                   |           |
+|    fps                  | 411       |
+|    iterations           | 4         |
+|    time_elapsed         | 19        |
+|    total_timesteps      | 8192      |
+| train/                  |           |
+|    approx_kl            | 0.0       |
+|    clip_fraction        | 0         |
+|    clip_range           | 0.2       |
+|    entropy_loss         | -8.69e-07 |
+|    explained_variance   | -0.232    |
+|    learning_rate        | 0.001     |
+|    loss                 | 35.9      |
+|    n_updates            | 30        |
+|    policy_gradient_loss | 4.22e-07  |
+|    value_loss           | 468       |
+---------------------------------------
+---------------------------------------
+| rollout/                |           |
+|    ep_len_mean          | 1e+03     |
+|    ep_rew_mean          | -9.99e+03 |
+| time/                   |           |
+|    fps                  | 394       |
+|    iterations           | 5         |
+|    time_elapsed         | 25        |
+|    total_timesteps      | 10240     |
+| train/                  |           |
+|    approx_kl            | 0.0       |
+|    clip_fraction        | 0         |
+|    clip_range           | 0.2       |
+|    entropy_loss         | -1.79e-08 |
+|    explained_variance   | -0.237    |
+|    learning_rate        | 0.001     |
+|    loss                 | 90.4      |
+|    n_updates            | 40        |
+|    policy_gradient_loss | 1.45e-08  |
+|    value_loss           | 303       |
+---------------------------------------
+---------------------------------------
+| rollout/                |           |
+|    ep_len_mean          | 1e+03     |
+|    ep_rew_mean          | -9.99e+03 |
+| time/                   |           |
+|    fps                  | 382       |
+|    iterations           | 6         |
+|    time_elapsed         | 32        |
+|    total_timesteps      | 12288     |
+| train/                  |           |
+|    approx_kl            | 0.0       |
+|    clip_fraction        | 0         |
+|    clip_range           | 0.2       |
+|    entropy_loss         | -1.28e-09 |
+|    explained_variance   | -0.14     |
+|    learning_rate        | 0.001     |
+|    loss                 | 55.8      |
+|    n_updates            | 50        |
+|    policy_gradient_loss | -1.9e-07  |
+|    value_loss           | 324       |
+---------------------------------------
+---------------------------------------
+| rollout/                |           |
+|    ep_len_mean          | 1e+03     |
+|    ep_rew_mean          | -1e+04    |
+| time/                   |           |
+|    fps                  | 375       |
+|    iterations           | 7         |
+|    time_elapsed         | 38        |
+|    total_timesteps      | 14336     |
+| train/                  |           |
+|    approx_kl            | 0.0       |
+|    clip_fraction        | 0         |
+|    clip_range           | 0.2       |
+|    entropy_loss         | -1.37e-10 |
+|    explained_variance   | 0.135     |
+|    learning_rate        | 0.001     |
+|    loss                 | 74.2      |
+|    n_updates            | 60        |
+|    policy_gradient_loss | -4.21e-08 |
+|    value_loss           | 282       |
+---------------------------------------
+---------------------------------------
+| rollout/                |           |
+|    ep_len_mean          | 1e+03     |
+|    ep_rew_mean          | -1e+04    |
+| time/                   |           |
+|    fps                  | 369       |
+|    iterations           | 8         |
+|    time_elapsed         | 44        |
+|    total_timesteps      | 16384     |
+| train/                  |           |
+|    approx_kl            | 0.0       |
+|    clip_fraction        | 0         |
+|    clip_range           | 0.2       |
+|    entropy_loss         | -1.81e-11 |
+|    explained_variance   | 0.00547   |
+|    learning_rate        | 0.001     |
+|    loss                 | 27.2      |
+|    n_updates            | 70        |
+|    policy_gradient_loss | -7.5e-08  |
+|    value_loss           | 333       |
+---------------------------------------
+--------------------------------------
+| rollout/                |          |
+|    ep_len_mean          | 1e+03    |
+|    ep_rew_mean          | -1e+04   |
+| time/                   |          |
+|    fps                  | 365      |
+|    iterations           | 9        |
+|    time_elapsed         | 50       |
+|    total_timesteps      | 18432    |
+| train/                  |          |
+|    approx_kl            | 0.0      |
+|    clip_fraction        | 0        |
+|    clip_range           | 0.2      |
+|    entropy_loss         | -5.9e-12 |
+|    explained_variance   | 0.63     |
+|    learning_rate        | 0.001    |
+|    loss                 | 12.7     |
+|    n_updates            | 80       |
+|    policy_gradient_loss | 3.23e-07 |
+|    value_loss           | 199      |
+--------------------------------------
+Eval num_timesteps=20000, episode_reward=-10000.00 +/- 0.00
+Episode length: 1000.00 +/- 0.00
+---------------------------------------
+| eval/                   |           |
+|    mean_ep_length       | 1e+03     |
+|    mean_reward          | -1e+04    |
+| time/                   |           |
+|    total_timesteps      | 20000     |
+| train/                  |           |
+|    approx_kl            | 0.0       |
+|    clip_fraction        | 0         |
+|    clip_range           | 0.2       |
+|    entropy_loss         | -1.76e-12 |
+|    explained_variance   | 0.508     |
+|    learning_rate        | 0.001     |
+|    loss                 | 17.3      |
+|    n_updates            | 90        |
+|    policy_gradient_loss | -1.95e-07 |
+|    value_loss           | 117       |
+---------------------------------------
+New best mean reward!
+---------------------------------
+| rollout/           |          |
+|    ep_len_mean     | 1e+03    |
+|    ep_rew_mean     | -1e+04   |
+| time/              |          |
+|    fps             | 322      |
+|    iterations      | 10       |
+|    time_elapsed    | 63       |
+|    total_timesteps | 20480    |
+---------------------------------
+---------------------------------------
+| rollout/                |           |
+|    ep_len_mean          | 1e+03     |
+|    ep_rew_mean          | -1e+04    |
+| time/                   |           |
+|    fps                  | 323       |
+|    iterations           | 11        |
+|    time_elapsed         | 69        |
+|    total_timesteps      | 22528     |
+| train/                  |           |
+|    approx_kl            | 0.0       |
+|    clip_fraction        | 0         |
+|    clip_range           | 0.2       |
+|    entropy_loss         | -4.83e-13 |
+|    explained_variance   | 0.743     |
+|    learning_rate        | 0.001     |
+|    loss                 | 28.1      |
+|    n_updates            | 100       |
+|    policy_gradient_loss | -7.62e-09 |
+|    value_loss           | 92.4      |
+---------------------------------------
+---------------------------------------
+| rollout/                |           |
+|    ep_len_mean          | 1e+03     |
+|    ep_rew_mean          | -1e+04    |
+| time/                   |           |
+|    fps                  | 324       |
+|    iterations           | 12        |
+|    time_elapsed         | 75        |
+|    total_timesteps      | 24576     |
+| train/                  |           |
+|    approx_kl            | 0.0       |
+|    clip_fraction        | 0         |
+|    clip_range           | 0.2       |
+|    entropy_loss         | -3.33e-13 |
+|    explained_variance   | 0.72      |
+|    learning_rate        | 0.001     |
+|    loss                 | 188       |
+|    n_updates            | 110       |
+|    policy_gradient_loss | -2.7e-08  |
+|    value_loss           | 265       |
+---------------------------------------
+---------------------------------------
+| rollout/                |           |
+|    ep_len_mean          | 1e+03     |
+|    ep_rew_mean          | -1e+04    |
+| time/                   |           |
+|    fps                  | 325       |
+|    iterations           | 13        |
+|    time_elapsed         | 81        |
+|    total_timesteps      | 26624     |
+| train/                  |           |
+|    approx_kl            | 0.0       |
+|    clip_fraction        | 0         |
+|    clip_range           | 0.2       |
+|    entropy_loss         | -2.76e-13 |
+|    explained_variance   | 0.612     |
+|    learning_rate        | 0.001     |
+|    loss                 | 25.1      |
+|    n_updates            | 120       |
+|    policy_gradient_loss | 1.25e-08  |
+|    value_loss           | 177       |
+---------------------------------------
+
+================================================================================
+FINAL TRAINING STATISTICS
+================================================================================
+
+Total Episodes: 13
+Total Timesteps: 25000
+
+Game Results:
+  Wins: 0 (0.00%)
+  Losses: 0 (0.00%)
+  Truncated: 13 (100.00%)
+
+Performance Metrics:
+  Average Episode Reward: 0.00
+  Total Valid Moves: 80
+  Total Moves: 70
+
+Training completed! Model saved to ./models/simple_spider_solitaire_faceup_20251010_185630
+================================================================================
+
+
+[Simple PPO] Evaluating trained model...
+
+[Simple PPO] Training completed. Estimated 50 episodes.
+[Simple PPO] Evaluation win rate: 0.00%
+Plots saved to results/simple_comparison_faceup/comparison.png
+
+Report saved to results/simple_comparison_faceup/report.md
+# Spider Solitaire Simplified RL Comparison Report (Faceup)
+
+Generated on: 2025-10-10 18:58:12
+
+## Summary Results (50 episodes each)
+
+### Simplified Network Architecture:
+- **Conv Layers**: 2 layers (16→32 channels)
+- **FC Layers**: Single layer (128 neurons)
+- **Total Parameters**: ~10x fewer than original networks
+
+### Environment Features:
+- Faceup environment with all cards visible
+- Maximum steps per episode (truncation)
+- Proper handling of stuck games
+- Action masking for valid moves
+
+| Algorithm | Win Rate | Avg Reward | Final 20 Avg | Training Time |
+|-----------|----------|------------|--------------|---------------|
+| Simple DQN | 0.0% | 1641.1 | 1790.3 | 472.6s |
+| Simple A2C | 0.0% | 1263.2 | 1299.0 | 151.8s |
+| Simple PPO | 0.0% | -10000.0 | -10000.0 | 101.2s |
+
+## Analysis
+
+- **Best Win Rate**: Simple DQN (0.0%)
+- **Best Average Reward**: Simple DQN (1641.1)
+- **Fastest Training**: Simple PPO (101.2s)
+
+### Last Episode Details
+
+| Algorithm | Game Result | Valid Moves | Sequences |
+|-----------|-------------|-------------|-----------|
+| Simple DQN | TRUNCATED | 7 | 0/8 |
+| Simple PPO | TRUNCATED | 7 | 0/8 |
+
+==================================================
+Simplified algorithm comparison complete!
+Results saved to results/simple_comparison_faceup/

@@ -14,14 +14,14 @@ from typing import Optional, List, Dict, Any
 class SpiderSolitaireEnv(gym.Env):
     """
     Spider Solitaire environment for reinforcement learning.
-    
+
     Game Rules:
     - 104 cards (2 decks), single suit variant
     - 10 tableau columns
     - Initial deal: 54 cards (6,6,6,6,5,5,5,5,5,5 per column)
     - Face-down cards except last card in each column
     - 5 stock piles with 10 cards each (50 cards total)
-    - Goal: Create 8 complete sequences (K to A) of the same suit
+    - Goal: Create 2 complete sequences (K to A) of the same suit (MODIFIED from 4)
     """
     
     metadata = {"render_modes": ["human", "ansi"], "render_fps": 4}
@@ -30,7 +30,7 @@ class SpiderSolitaireEnv(gym.Env):
     RANKS = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
     RANK_VALUES = {rank: i for i, rank in enumerate(RANKS)}
     
-    def __init__(self, render_mode: Optional[str] = None, max_steps: int = 500):
+    def __init__(self, render_mode: Optional[str] = None, max_steps: int = 1000):
         self.render_mode = render_mode
         self.max_steps = max_steps
 
@@ -38,7 +38,6 @@ class SpiderSolitaireEnv(gym.Env):
         self.tableau = [[] for _ in range(10)]  # 10 columns
         self.stock = []  # Remaining cards to deal
         self.foundation = []  # Completed sequences
-        self.score = 0
         self.moves = 0
         self.current_step = 0
         
@@ -48,7 +47,7 @@ class SpiderSolitaireEnv(gym.Env):
         self.observation_space = spaces.Dict({
             'tableau': spaces.Box(low=0, high=26, shape=(10, 19), dtype=np.int8),
             'stock_count': spaces.Box(low=0, high=5, shape=(1,), dtype=np.int8),
-            'foundation_count': spaces.Box(low=0, high=8, shape=(1,), dtype=np.int8),
+            'foundation_count': spaces.Box(low=0, high=2, shape=(1,), dtype=np.int8),
         })
         
         # Define action space
@@ -86,7 +85,6 @@ class SpiderSolitaireEnv(gym.Env):
         # Remaining cards go to stock (5 piles of 10 cards each)
         self.stock = [deck[i:i+10] for i in range(0, 50, 10)]
         self.foundation = []
-        self.score = 500  # Starting score
         self.moves = 0
         self.current_step = 0
 
@@ -111,13 +109,12 @@ class SpiderSolitaireEnv(gym.Env):
             if self._is_valid_move(from_col, to_col, num_cards):
                 reward = self._move_cards(from_col, to_col, num_cards)
                 self.moves += 1
-                self.score -= 1  # Penalty for each move
 
                 # Check for completed sequences
-                self._check_completed_sequences()
+                reward += self._check_completed_sequences()
 
-                # Check if game is won
-                if len(self.foundation) == 8:
+                # Check if game is won (2 sequences instead of 4)
+                if len(self.foundation) == 2:
                     terminated = True
                     reward += 1000  # Win bonus
             else:
@@ -187,12 +184,29 @@ class SpiderSolitaireEnv(gym.Env):
         self.tableau[from_col] = self.tableau[from_col][:-num_cards]
         self.tableau[to_col].extend(cards_to_move)
 
+        reward = 0
+
         # Flip face-down card if exposed
         if self.tableau[from_col] and not self.tableau[from_col][-1]['face_up']:
             self.tableau[from_col][-1]['face_up'] = True
-            return 5  # Reward for revealing a card
+            reward += 5  # Reward for revealing a card
 
-        return 0  # Neutral reward for valid moves
+        # Additional reward shaping: reward for building sequences
+        # Check if we created a longer valid sequence in destination column
+        dest_col = self.tableau[to_col]
+        max_seq_len = 1
+        for i in range(len(dest_col) - 1, 0, -1):
+            if (dest_col[i]['face_up'] and dest_col[i-1]['face_up'] and
+                dest_col[i-1]['rank'] == dest_col[i]['rank'] + 1):
+                max_seq_len += 1
+            else:
+                break
+
+        # Small reward for creating longer sequences (helps progress)
+        if max_seq_len >= 3:
+            reward += (max_seq_len - 2) * 0.5  # +0.5 for length 3, +1 for length 4, etc.
+
+        return reward
     
     def _deal_from_stock(self):
         """Deal one card from stock to each column."""
@@ -208,6 +222,7 @@ class SpiderSolitaireEnv(gym.Env):
     
     def _check_completed_sequences(self):
         """Check for and remove completed K-A sequences."""
+        reward = 0
         for col in range(10):
             if len(self.tableau[col]) >= 13:
                 # Check if last 13 cards form a complete sequence
@@ -215,11 +230,12 @@ class SpiderSolitaireEnv(gym.Env):
                 if self._is_complete_sequence(last_13):
                     self.tableau[col] = self.tableau[col][:-13]
                     self.foundation.append(last_13)
-                    self.score += 100  # Bonus for completing sequence
-                    
+                    reward += 100  # Bonus for completing sequence
+
                     # Flip face-down card if exposed
                     if self.tableau[col] and not self.tableau[col][-1]['face_up']:
                         self.tableau[col][-1]['face_up'] = True
+        return reward
     
     def _is_complete_sequence(self, cards: List[Dict]) -> bool:
         """Check if cards form a complete K to A sequence."""
@@ -255,7 +271,6 @@ class SpiderSolitaireEnv(gym.Env):
     def _get_info(self) -> Dict[str, Any]:
         """Get additional info."""
         return {
-            'score': self.score,
             'moves': self.moves,
             'valid_moves': self._count_valid_moves(),
             'current_step': self.current_step,
@@ -294,8 +309,8 @@ class SpiderSolitaireEnv(gym.Env):
     def _render_ansi(self) -> str:
         """Render game state as ASCII text."""
         lines = []
-        lines.append(f"Spider Solitaire - Score: {self.score}, Moves: {self.moves}")
-        lines.append(f"Stock: {len(self.stock)} piles, Foundation: {len(self.foundation)}/8")
+        lines.append(f"Spider Solitaire - Moves: {self.moves}")
+        lines.append(f"Stock: {len(self.stock)} piles, Foundation: {len(self.foundation)}/2")
         lines.append(f"Steps: {self.current_step}/{self.max_steps}")
         lines.append("-" * 50)
         
