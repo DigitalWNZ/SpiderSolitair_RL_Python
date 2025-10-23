@@ -494,7 +494,7 @@ class SimpleA2CAgent:
         # Initialize environments
         if self.n_envs > 1:
             # Create multiple environments with ActionMasker wrapper
-            envs = [ActionMasker(SpiderSolitaireEnv(max_steps=500)) for _ in range(self.n_envs)]
+            envs = [ActionMasker(SpiderSolitaireEnv(max_steps=500, use_strategic_deal=True, difficulty='easy')) for _ in range(self.n_envs)]
             states = [env.reset()[0] for env in envs]
             self.env.envs = envs  # Store for rollout collection
         else:
@@ -630,7 +630,8 @@ class SimpleA2CAgent:
         """
         Evaluate the trained model.
         """
-        eval_env = SpiderSolitaireEnv(render_mode="human" if render else None, max_steps=500)
+        eval_env = SpiderSolitaireEnv(render_mode="human" if render else None, max_steps=500,
+                                      use_strategic_deal=True, difficulty='easy')
 
         rewards = []
         wins = 0
@@ -722,7 +723,7 @@ def main():
     args = parser.parse_args()
 
     # Create environment with ActionMasker wrapper
-    env = ActionMasker(SpiderSolitaireEnv(max_steps=500))
+    env = ActionMasker(SpiderSolitaireEnv(max_steps=500, use_strategic_deal=True, difficulty='easy'))
 
     # Create agent with simplified network
     agent = SimpleA2CAgent(

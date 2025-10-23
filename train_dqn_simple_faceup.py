@@ -355,7 +355,8 @@ class SimpleDQNAgent:
         """
         Evaluate the trained model.
         """
-        eval_env = SpiderSolitaireEnv(render_mode="human" if render else None, max_steps=500)
+        eval_env = SpiderSolitaireEnv(render_mode="human" if render else None, max_steps=500,
+                                      use_strategic_deal=True, difficulty='easy')
 
         rewards = []
         wins = 0
@@ -443,8 +444,8 @@ def main():
     parser.add_argument('--record-dir', type=str, default='replays', help='Directory to save episode replays')
     args = parser.parse_args()
 
-    # Create environment with ActionMasker wrapper
-    env = ActionMasker(SpiderSolitaireEnv(max_steps=500))
+    # Create environment with ActionMasker wrapper and strategic dealing
+    env = ActionMasker(SpiderSolitaireEnv(max_steps=500, use_strategic_deal=True, difficulty='easy'))
 
     # Create agent with simplified network
     agent = SimpleDQNAgent(

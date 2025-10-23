@@ -15,8 +15,9 @@ class MaskedSpiderSolitaireEnvFaceup(SpiderSolitaireEnv):
     Faceup Spider Solitaire with action masking to ensure only valid actions are taken.
     """
 
-    def __init__(self, render_mode: Optional[str] = None, max_steps: int = 500):
-        super().__init__(render_mode, max_steps)
+    def __init__(self, render_mode: Optional[str] = None, max_steps: int = 500,
+                 use_strategic_deal: bool = True, difficulty: str = 'easy'):
+        super().__init__(render_mode, max_steps, use_strategic_deal, difficulty)
         self._action_masks = None
 
         # Update observation space to include action mask
@@ -124,7 +125,8 @@ class ActionMasker(gym.Wrapper):
 
 
 # Create the ActionMasker wrapper function
-def create_masked_faceup_env(render_mode: Optional[str] = None, max_steps: int = 500):
+def create_masked_faceup_env(render_mode: Optional[str] = None, max_steps: int = 500,
+                             use_strategic_deal: bool = True, difficulty: str = 'easy'):
     """Create a masked Faceup Spider Solitaire environment."""
-    env = MaskedSpiderSolitaireEnvFaceup(render_mode, max_steps)
+    env = MaskedSpiderSolitaireEnvFaceup(render_mode, max_steps, use_strategic_deal, difficulty)
     return ActionMasker(env)

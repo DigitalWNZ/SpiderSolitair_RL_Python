@@ -30,9 +30,12 @@ class SpiderSolitaireEnv(gym.Env):
     RANKS = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
     RANK_VALUES = {rank: i for i, rank in enumerate(RANKS)}
     
-    def __init__(self, render_mode: Optional[str] = None, max_steps: int = 1000):
+    def __init__(self, render_mode: Optional[str] = None, max_steps: int = 1000,
+                 use_strategic_deal: bool = False, difficulty: str = 'easy'):
         self.render_mode = render_mode
         self.max_steps = max_steps
+        self.use_strategic_deal = use_strategic_deal
+        self.difficulty = difficulty
 
         # Game state
         self.tableau = [[] for _ in range(10)]  # 10 columns
@@ -59,17 +62,22 @@ class SpiderSolitaireEnv(gym.Env):
     def reset(self, seed: Optional[int] = None, options: Optional[dict] = None):
         super().reset(seed=seed)
         # options parameter kept for gymnasium compatibility
-        
-        # Initialize deck (single suit - simplified version)
-        deck = []
-        for _ in range(8):  # 8 sets of 13 cards
-            for rank in range(13):
-                deck.append({'rank': rank, 'face_up': False})
-        
-        # Shuffle deck
+
+        # Set random seed
         if seed is not None:
             random.seed(seed)
-        random.shuffle(deck)
+            np.random.seed(seed)
+
+        # Initialize deck - use strategic or random
+        if self.use_strategic_deal:
+            deck = self._create_strategic_deck()
+        else:
+            # Original random deck
+            deck = []
+            for _ in range(8):  # 8 sets of 13 cards
+                for rank in range(13):
+                    deck.append({'rank': rank, 'face_up': False})
+            random.shuffle(deck)
         
         # Deal initial tableau
         self.tableau = [[] for _ in range(10)]
@@ -369,5 +377,105 @@ class SpiderSolitaireEnv(gym.Env):
         
         lines.append("-" * 50)
         lines.append("Col: 0   1   2   3   4   5   6   7   8   9")
-        
+
         return "\n".join(lines)
+
+    def _create_strategic_deck(self) -> List[Dict]:
+        """
+        Create a strategically arranged deck based on difficulty level.
+        Called when use_strategic_deal=True.
+        """
+        if self.difficulty == 'easy':
+            return self._create_easy_deck()
+        elif self.difficulty == 'medium':
+            return self._create_medium_deck()
+        else:
+            return self._create_hard_deck()
+
+    def _create_easy_deck(self) -> List[Dict]:
+        """
+        Create an easy deck with strategic placement.
+        Strategy:
+        1. First columns get descending sequences
+        2. Face-down cards don't block sequences badly
+        3. Multiple complete sequences possible
+        """
+        # Tableau gets 54 cards arranged strategically
+        tableau_cards = []
+
+        # Column layout: create partial sequences
+        # Columns 0-3 get longer partial sequences (6 cards each)
+        for _ in range(4):
+            # Start with a high card and descend
+            start_rank = random.randint(8, 12)  # Start from 9-K
+            for i in range(6):
+                rank = max(0, start_rank - i)
+                card = {'rank': rank, 'face_up': False}
+                tableau_cards.append(card)
+
+        # Columns 4-9 get shorter sequences (5 cards each)
+        for _ in range(6):
+            start_rank = random.randint(6, 11)  # Start from 7-Q
+            for i in range(5):
+                rank = max(0, start_rank - i)
+                card = {'rank': rank, 'face_up': False}
+                tableau_cards.append(card)
+
+        # Stock gets remaining 50 cards
+        all_cards = []
+        for _ in range(8):
+            for rank in range(13):
+                all_cards.append({'rank': rank, 'face_up': False})
+
+        # Remove approximate cards used for tableau and use rest for stock
+        remaining = [c for c in all_cards]
+        random.shuffle(remaining)
+        stock_cards = remaining[:50]
+
+        # Combine: stock cards first, then tableau (we pop from end)
+        deck = stock_cards + tableau_cards
+
+        return deck
+
+    def _create_medium_deck(self) -> List[Dict]:
+        """
+        Create a medium difficulty deck.
+        Less strategic than easy, but better than random.
+        """
+        deck = []
+
+        # Create all 104 cards
+        for _ in range(8):
+            for rank in range(13):
+                deck.append({'rank': rank, 'face_up': False})
+
+        # Partially shuffle to maintain some sequences
+        # Group into chunks and shuffle within chunks
+        chunk_size = 20
+        chunks = [deck[i:i+chunk_size] for i in range(0, len(deck), chunk_size)]
+
+        for chunk in chunks:
+            random.shuffle(chunk)
+
+        # Reassemble
+        deck = []
+        for chunk in chunks:
+            deck.extend(chunk)
+
+        return deck
+
+    def _create_hard_deck(self) -> List[Dict]:
+        """
+        Create a hard difficulty deck (nearly random but slightly better).
+        """
+        deck = []
+
+        # Create all 104 cards
+        for _ in range(8):
+            for rank in range(13):
+                deck.append({'rank': rank, 'face_up': False})
+
+        # Almost full shuffle
+        random.shuffle(deck)
+
+        return deck
