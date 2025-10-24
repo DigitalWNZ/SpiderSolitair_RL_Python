@@ -16,7 +16,7 @@ class MaskedSpiderSolitaireEnvFaceup(SpiderSolitaireEnv):
     """
 
     def __init__(self, render_mode: Optional[str] = None, max_steps: int = 500,
-                 use_strategic_deal: bool = True, difficulty: str = 'easy'):
+                 use_strategic_deal: bool = True, difficulty: str = 'happy'):
         super().__init__(render_mode, max_steps, use_strategic_deal, difficulty)
         self._action_masks = None
 
@@ -126,7 +126,7 @@ class ActionMasker(gym.Wrapper):
 
 # Create the ActionMasker wrapper function
 def create_masked_faceup_env(render_mode: Optional[str] = None, max_steps: int = 500,
-                             use_strategic_deal: bool = True, difficulty: str = 'easy'):
+                             use_strategic_deal: bool = True, difficulty: str = 'happy'):
     """Create a masked Faceup Spider Solitaire environment."""
     env = MaskedSpiderSolitaireEnvFaceup(render_mode, max_steps, use_strategic_deal, difficulty)
     return ActionMasker(env)

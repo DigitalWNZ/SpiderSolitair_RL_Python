@@ -31,7 +31,7 @@ class SpiderSolitaireEnv(gym.Env):
     RANK_VALUES = {rank: i for i, rank in enumerate(RANKS)}
     
     def __init__(self, render_mode: Optional[str] = None, max_steps: int = 1000,
-                 use_strategic_deal: bool = False, difficulty: str = 'easy'):
+                 use_strategic_deal: bool = False, difficulty: str = 'happy'):
         self.render_mode = render_mode
         self.max_steps = max_steps
         self.use_strategic_deal = use_strategic_deal
@@ -385,12 +385,70 @@ class SpiderSolitaireEnv(gym.Env):
         Create a strategically arranged deck based on difficulty level.
         Called when use_strategic_deal=True.
         """
-        if self.difficulty == 'easy':
+        if self.difficulty == 'happy':
+            return self._create_happy_deck()
+        elif self.difficulty == 'easy':
             return self._create_easy_deck()
         elif self.difficulty == 'medium':
             return self._create_medium_deck()
         else:
             return self._create_hard_deck()
+
+    def _create_happy_deck(self) -> List[Dict]:
+        """
+        Create a guaranteed winnable deck (easiest difficulty).
+
+        Strategy:
+        1. Design tableau with descending sequences that can combine
+        2. Arrange cards to enable completing at least one K→A sequence
+        3. Stock cards are strategic to help rather than hinder
+        """
+        # Strategically design the tableau for winnability
+        tableau_design = [
+            # Col 0: 6 cards - will build K-Q-J-10-9-8
+            [12, 11, 10, 9, 8, 7],
+            # Col 1: 6 cards - will build 7-6-5-4-3-2
+            [6, 5, 4, 3, 2, 1],
+            # Col 2: 6 cards - continuation for completing sequence
+            [5, 4, 3, 2, 1, 0],
+            # Col 3: 6 cards - high cards that can move
+            [12, 11, 10, 9, 8, 7],
+            # Col 4-9: 5 cards each - various descending sequences
+            [11, 10, 9, 8, 7],
+            [10, 9, 8, 7, 6],
+            [9, 8, 7, 6, 5],
+            [8, 7, 6, 5, 4],
+            [7, 6, 5, 4, 3],
+            [6, 5, 4, 3, 2],
+        ]
+
+        # Convert tableau design to cards
+        tableau_cards = []
+        for col_design in tableau_design:
+            for rank in col_design:
+                tableau_cards.append({'rank': rank, 'face_up': False})
+
+        # Create stock with remaining cards
+        # Total: 104 cards (8 sets of 13)
+        # Tableau uses 54 cards, stock gets 50 cards
+        all_ranks = list(range(13)) * 8  # All 104 cards
+        used_ranks = []
+        for col_design in tableau_design:
+            used_ranks.extend(col_design)
+
+        # Remove used cards from stock
+        stock_ranks = all_ranks.copy()
+        for rank in used_ranks:
+            stock_ranks.remove(rank)
+
+        # Shuffle stock to add some variability
+        random.shuffle(stock_ranks)
+        stock_cards = [{'rank': rank, 'face_up': False} for rank in stock_ranks]
+
+        # Deck: stock first, then tableau (we pop from end)
+        deck = stock_cards + tableau_cards
+
+        return deck
 
     def _create_easy_deck(self) -> List[Dict]:
         """

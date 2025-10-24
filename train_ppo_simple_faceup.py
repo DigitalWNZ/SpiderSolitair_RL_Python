@@ -369,7 +369,7 @@ def make_env(rank, seed=0, max_steps=500):
     Utility function for multiprocessed env with action masking.
     """
     def _init():
-        env = MaskedSpiderSolitaireEnvFaceup(max_steps=max_steps, use_strategic_deal=True, difficulty='easy')
+        env = MaskedSpiderSolitaireEnvFaceup(max_steps=max_steps, use_strategic_deal=True, difficulty='happy')
         env = ActionMaskingWrapper(env)
         env = Monitor(env)
         env.reset(seed=seed + rank)
@@ -409,7 +409,7 @@ def train_spider_solitaire_simple(total_timesteps=1_000_000, n_envs=4, learning_
 
     # Environment setup with action masking and strategic dealing
     def env_fn():
-        env = MaskedSpiderSolitaireEnvFaceup(max_steps=max_steps, use_strategic_deal=True, difficulty='easy')
+        env = MaskedSpiderSolitaireEnvFaceup(max_steps=max_steps, use_strategic_deal=True, difficulty='happy')
         env = ActionMaskingWrapper(env)
         return env
 
@@ -420,7 +420,7 @@ def train_spider_solitaire_simple(total_timesteps=1_000_000, n_envs=4, learning_
     )
 
     # Evaluation environment with action masking and strategic dealing
-    eval_env = MaskedSpiderSolitaireEnvFaceup(max_steps=max_steps, use_strategic_deal=True, difficulty='easy')
+    eval_env = MaskedSpiderSolitaireEnvFaceup(max_steps=max_steps, use_strategic_deal=True, difficulty='happy')
     eval_env = ActionMaskingWrapper(eval_env)
     eval_env = Monitor(eval_env)
 
@@ -519,7 +519,7 @@ def evaluate_model(model_path, n_episodes=10, render=True, max_steps=500):
 
     # Create environment with action masking and strategic dealing
     env = MaskedSpiderSolitaireEnvFaceup(render_mode="human" if render else None, max_steps=max_steps,
-                                         use_strategic_deal=True, difficulty='easy')
+                                         use_strategic_deal=True, difficulty='happy')
     env = ActionMaskingWrapper(env)
 
     # Tracking variables

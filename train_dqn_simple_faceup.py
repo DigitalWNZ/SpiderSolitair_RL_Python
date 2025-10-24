@@ -356,7 +356,7 @@ class SimpleDQNAgent:
         Evaluate the trained model.
         """
         eval_env = SpiderSolitaireEnv(render_mode="human" if render else None, max_steps=500,
-                                      use_strategic_deal=True, difficulty='easy')
+                                      use_strategic_deal=True, difficulty='happy')
 
         rewards = []
         wins = 0
@@ -445,7 +445,7 @@ def main():
     args = parser.parse_args()
 
     # Create environment with ActionMasker wrapper and strategic dealing
-    env = ActionMasker(SpiderSolitaireEnv(max_steps=500, use_strategic_deal=True, difficulty='easy'))
+    env = ActionMasker(SpiderSolitaireEnv(max_steps=500, use_strategic_deal=True, difficulty='happy'))
 
     # Create agent with simplified network
     agent = SimpleDQNAgent(

@@ -36,7 +36,7 @@ def quick_train_simple_dqn(episodes=100, max_steps_per_episode=500, record_episo
     print("="*50)
 
     start_time = time.time()
-    env = create_masked_faceup_env(max_steps=max_steps_per_episode, use_strategic_deal=True, difficulty='easy')
+    env = create_masked_faceup_env(max_steps=max_steps_per_episode, use_strategic_deal=True, difficulty='happy')
 
     # Create Simple DQN agent with faster settings
     agent = SimpleDQNAgent(
@@ -174,7 +174,7 @@ def quick_train_simple_a2c(episodes=100, max_steps_per_episode=500, record_episo
     print("="*50)
 
     start_time = time.time()
-    env = create_masked_faceup_env(max_steps=max_steps_per_episode, use_strategic_deal=True, difficulty='easy')
+    env = create_masked_faceup_env(max_steps=max_steps_per_episode, use_strategic_deal=True, difficulty='happy')
 
     # Create Simple A2C agent with single environment and recording enabled
     agent = SimpleA2CAgent(
@@ -318,7 +318,7 @@ def quick_train_simple_ppo(episodes=100, max_steps_per_episode=500, record_episo
         print(f"\n[Simple PPO] Evaluating trained model...")
         from spider_solitaire_masked_env_faceup import MaskedSpiderSolitaireEnvFaceup
         from train_ppo_simple_faceup import ActionMaskingWrapper
-        eval_env = MaskedSpiderSolitaireEnvFaceup(max_steps=max_steps_per_episode, use_strategic_deal=True, difficulty='easy')
+        eval_env = MaskedSpiderSolitaireEnvFaceup(max_steps=max_steps_per_episode, use_strategic_deal=True, difficulty='happy')
         eval_env = ActionMaskingWrapper(eval_env)
 
         episode_rewards = []
